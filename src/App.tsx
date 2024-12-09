@@ -1,35 +1,38 @@
-import { useState } from 'react'
-import './App.css'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { faker } from '@faker-js/faker';
+
+
+interface IProduct {
+  _id: number;
+  name: string;
+  price: number;
+}
+
+faker.seed(1)
+function createRandomProduct(): IProduct
+{
+ return {
+  _id: faker.number.int({ min: 1, max: 1000}),
+  name: faker.commerce.product(),
+  price: +faker.commerce.price(),
+ }
+}
+
+const products = faker.helpers.multiple(createRandomProduct, { count: 5})
+
+console.log(createRandomProduct())
+console.log(products)
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <h1>Re-StoreCourse App</h1>
+      <ul>
+        {products.map(item => (
+          <li key={item._id}>{item._id} - {item.name}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-export default App
+export default App;
