@@ -10,15 +10,13 @@ export default function Header({darkMode, handleThemeChange}: Props) {
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
       <Toolbar>
-        <Typography variant="h6">Re-StoreCourse App</Typography>
-        <Typography sx={{m: 'auto auto' }}>
-          Theme Dark
+        <Typography variant="h6">Re-StoreCourse App</Typography>        
           <Switch
             checked={darkMode}
             onChange={handleThemeChange}
             inputProps={{ "aria-label": "controlled" }}
           />
-        </Typography>
+        
       </Toolbar>
     </AppBar>
   );
