@@ -2,11 +2,11 @@ import { ProductBrand } from "./productBrand";
 import { ProductType } from "./productType";
 
 export interface Product  {
-  type?: ProductType;
-  brand?: ProductBrand;
- id: number;
-  typeId?: number;
-  brandId?: number;
+  id: number;
+  type: ProductType;
+  brand: ProductBrand;
+  typeId: number;
+  brandId: number;
   name: string;
   description: string;
   price: number;
