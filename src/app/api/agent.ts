@@ -1,12 +1,16 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-import { toast } from 'react-toastify';
-import { router } from '../router/Routes';
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-toastify";
+import { router } from "../router/Routes";
 // import from 'react-toastify/'
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = "http://localhost:5000/api";
+
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 const responseBody = (response: AxiosResponse) => response.data;
 
-axios.interceptors.response.use(async response => {
+axios.interceptors.response.use(
+  async (response) => {
+    await sleep();
     return response;
   },
   (error: AxiosError) => {
@@ -28,10 +32,10 @@ axios.interceptors.response.use(async response => {
         toast.error(data.title);
         break;
       case 404:
-        toast.error(data.title);
+        router.navigate("/not-found", { state: { error: data } });
         break;
       case 500:
-        router.navigate('/server-error', {state: {error: data}})
+        router.navigate("/server-error", { state: { error: data } });
         break;
       default:
         break;
@@ -49,16 +53,16 @@ const requests = {
 };
 
 const Catalog = {
-  list: () => requests.get('products'),
+  list: () => requests.get("products"),
   details: (id: number) => requests.get(`products/${id}`),
 };
 
 const TestError = {
-  get400Error: () => requests.get('buggy/bad-request'),
-  get401Error: () => requests.get('buggy/unauthorised'),
-  get404Error: () => requests.get('buggy/not-found'),
-  get500Error: () => requests.get('buggy/server-error'),
-  getValidationError: () => requests.get('buggy/validation-error'),
+  get400Error: () => requests.get("buggy/bad-request"),
+  get401Error: () => requests.get("buggy/unauthorised"),
+  get404Error: () => requests.get("buggy/not-found"),
+  get500Error: () => requests.get("buggy/server-error"),
+  getValidationError: () => requests.get("buggy/validation-error"),
 };
 
 const agent = {
