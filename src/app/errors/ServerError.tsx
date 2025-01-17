@@ -1,5 +1,5 @@
-import { Container, Divider, Paper, Typography } from '@mui/material';
-import { useLocation } from 'react-router';
+import { Container, Divider, Paper, Typography } from "@mui/material";
+import { useLocation } from "react-router";
 
 export default function ServerError() {
   const { state } = useLocation();
@@ -14,7 +14,7 @@ export default function ServerError() {
           <Divider />
           <Typography variant="body1">
             {console.log(state.error)}
-            {state.error.detail || 'Internal server error'}
+            {state.error.detail || "Internal server error"}
           </Typography>
         </>
       ) : (
