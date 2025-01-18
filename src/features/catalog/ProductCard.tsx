@@ -7,17 +7,17 @@ import {
   CardHeader,
   CardMedia,
   Typography,
-} from "@mui/material";
-import { Product } from "../../app/models/product";
-import { deepOrange } from "@mui/material/colors";
-import { Link } from "react-router";
+} from '@mui/material'
+import { Product } from '../../app/models/product'
+import { deepOrange } from '@mui/material/colors'
+import { Link } from 'react-router'
 
 interface Props {
-  product: Product;
+  product: Product
 }
 
 export default function ProductCard({ product }: Props) {
-  console.log(product);
+  console.log(product)
 
   return (
     <Card>
@@ -27,38 +27,44 @@ export default function ProductCard({ product }: Props) {
           // src={product.pictureUrl}>
           //   {product.name.charAt(0).toUpperCase()}
           // </Avatar>
-          <Avatar sx={{ bgcolor: deepOrange[300]}}>
+          <Avatar sx={{ bgcolor: deepOrange[300] }}>
             {product.name.charAt(0).toUpperCase()}
           </Avatar>
         }
         title={product.name}
         titleTypographyProps={{
-          sx: { fontWeight: "bold", color: "primary.main" },
-          variant: "h5"
+          sx: { fontWeight: 'bold', color: 'primary.main' },
+          variant: 'h5',
         }}
         subheader={
-          <Typography variant="subtitle2">          
+          <Typography variant='subtitle2'>
             {product.brand?.name}/{product.type?.name}
           </Typography>
         }
       />
       <CardMedia
-        sx={{ height: 140, backgroundSize: "cover", bgcolor: 'primary.contrastText' }}
+        sx={{
+          height: 140,
+          backgroundSize: 'cover',
+          bgcolor: 'primary.contrastText',
+        }}
         image={product.pictureUrl}
         title={product.name}
       />
       <CardContent>
-        <Typography gutterBottom color="secondary" variant="h5">
+        <Typography gutterBottom color='secondary' variant='h5'>
           ${(product.price / 100).toFixed(2)}
         </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
           {product.description}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Add to cart</Button>
-        <Button component={Link} to={`/catalog/${product.id}`} size="small">View</Button>
+        <Button size='small'>Add to cart</Button>
+        <Button component={Link} to={`/catalog/${product.id}`} size='small'>
+          View
+        </Button>
       </CardActions>
     </Card>
-  );
+  )
 }
