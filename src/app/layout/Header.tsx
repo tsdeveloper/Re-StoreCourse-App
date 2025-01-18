@@ -1,4 +1,4 @@
-import { ShoppingCart } from '@mui/icons-material';
+import { ShoppingCart } from '@mui/icons-material'
 import {
   AppBar,
   Badge,
@@ -9,23 +9,23 @@ import {
   Switch,
   Toolbar,
   Typography,
-} from '@mui/material';
-import { NavLink } from 'react-router';
+} from '@mui/material'
+import { NavLink } from 'react-router'
 
 const midLinks = [
   { title: 'catalog', path: '/catalog' },
   { title: 'about', path: '/about' },
   { title: 'contact', path: '/contact' },
-];
+]
 
 const rightLinks = [
   { title: 'login', path: '/login' },
   { title: 'register', path: '/register' },
-];
+]
 
 interface Props {
-  darkMode: boolean;
-  handleThemeChange: () => void;
+  darkMode: boolean
+  handleThemeChange: () => void
 }
 
 const navStyles = {
@@ -38,11 +38,11 @@ const navStyles = {
   '&.active': {
     color: 'text.secondary',
   },
-};
+}
 
 export default function Header({ darkMode, handleThemeChange }: Props) {
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
+    <AppBar position='static' sx={{ mb: 4 }}>
       <Toolbar
         sx={{
           display: 'flex',
@@ -51,7 +51,7 @@ export default function Header({ darkMode, handleThemeChange }: Props) {
         }}
       >
         <Box display='flex' alignItems='center'>
-          <Typography variant="h6" component={NavLink} to="/" sx={navStyles}>
+          <Typography variant='h6' component={NavLink} to='/' sx={navStyles}>
             Re-StoreCourse App
           </Typography>
           <Switch
@@ -70,8 +70,8 @@ export default function Header({ darkMode, handleThemeChange }: Props) {
         </List>
 
         <Box display='flex' alignItems='center'>
-          <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
-            <Badge badgeContent="4" color="secondary">
+          <IconButton size='large' edge='start' color='inherit' sx={{ mr: 2 }}>
+            <Badge badgeContent='4' color='secondary'>
               <ShoppingCart />
             </Badge>
           </IconButton>
@@ -86,5 +86,5 @@ export default function Header({ darkMode, handleThemeChange }: Props) {
         </Box>
       </Toolbar>
     </AppBar>
-  );
+  )
 }

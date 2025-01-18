@@ -1,9 +1,9 @@
-import { Alert, AlertTitle, Button, ButtonGroup, Container, ListItem, ListItemText, Typography } from "@mui/material";
-import agent from "../../app/api/agent";
-import { useState } from "react";
+import { Alert, AlertTitle, Button, ButtonGroup, Container, ListItem, ListItemText, Typography } from '@mui/material'
+import agent from '../../app/api/agent'
+import { useState } from 'react'
 
 export default function AboutPage() {
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<string[]>([])
 
   function getValidationError(){
     agent.TestError.getValidationError()

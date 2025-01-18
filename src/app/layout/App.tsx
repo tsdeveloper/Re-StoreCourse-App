@@ -1,12 +1,12 @@
-import { Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-import Header from "./Header";
-import { useState } from "react";
-import { Outlet } from "react-router";
-import { ToastContainer } from "react-toastify";
+import { Container, createTheme, CssBaseline, ThemeProvider } from '@mui/material'
+import Header from './Header'
+import { useState } from 'react'
+import { Outlet } from 'react-router'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-  const palleteType = darkMode ? 'dark' : 'light';
+  const [darkMode, setDarkMode] = useState(false)
+  const palleteType = darkMode ? 'dark' : 'light'
   const theme = createTheme({
     palette: {
       mode: palleteType,
@@ -17,7 +17,7 @@ function App() {
   })
 
  function handleThemeChange() {
-  setDarkMode(!darkMode);
+  setDarkMode(!darkMode)
  }
   
   return (
@@ -29,7 +29,7 @@ function App() {
         <Outlet />
       </Container>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App
