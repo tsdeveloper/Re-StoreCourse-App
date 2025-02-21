@@ -8,7 +8,6 @@ export default function Catalog() {
   const [products, setProducts] = useState<Product[]>([])
 
   const [loading, setLoading] = useState(true)
-  const [loadingMessage, setLoadingMessage] = useState('Loading product...')
 
   useEffect(() => {
     agent.Catalog.list()
@@ -19,7 +18,7 @@ export default function Catalog() {
 
   console.log(products)
 
-  if (loading) return <LoadingComponent message={loadingMessage} />
+  if (loading) return <LoadingComponent message='Loading product...' />
   return (
     <>
       <ProductList products={products}/>
