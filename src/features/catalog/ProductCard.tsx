@@ -7,18 +7,27 @@ import {
   CardHeader,
   CardMedia,
   Typography,
-} from '@mui/material'
-import { Product } from '../../app/models/product'
-import { deepOrange } from '@mui/material/colors'
-import { Link } from 'react-router'
+} from "@mui/material";
+import { Product } from "../../app/models/product";
+import { deepOrange } from "@mui/material/colors";
+import { Link } from "react-router";
+import agent from "../../app/api/agent";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 interface Props {
-  product: Product
+  product: Product;
 }
 
 export default function ProductCard({ product }: Props) {
-  console.log(product)
+  const [loading, setLoading] = useState(false);
 
+  function handleAddItem(productId: number) {
+    setLoading(true);
+    agent.Basket.addItem(productId, 1)
+      .catch((error) => console.log(error))
+      .finally(() => setLoading(false));
+  }
   return (
     <Card>
       <CardHeader
@@ -33,11 +42,11 @@ export default function ProductCard({ product }: Props) {
         }
         title={product.name}
         titleTypographyProps={{
-          sx: { fontWeight: 'bold', color: 'primary.main' },
-          variant: 'h5',
+          sx: { fontWeight: "bold", color: "primary.main" },
+          variant: "h5",
         }}
         subheader={
-          <Typography variant='subtitle2'>
+          <Typography variant="subtitle2">
             {product.brand?.name}/{product.type?.name}
           </Typography>
         }
@@ -45,26 +54,32 @@ export default function ProductCard({ product }: Props) {
       <CardMedia
         sx={{
           height: 140,
-          backgroundSize: 'cover',
-          bgcolor: 'primary.contrastText',
+          backgroundSize: "cover",
+          bgcolor: "primary.contrastText",
         }}
         image={product.pictureUrl}
         title={product.name}
       />
       <CardContent>
-        <Typography gutterBottom color='secondary' variant='h5'>
+        <Typography gutterBottom color="secondary" variant="h5">
           ${(product.price / 100).toFixed(2)}
         </Typography>
-        <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {product.description}
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size='small'>Add to cart</Button>
-        <Button component={Link} to={`/catalog/${product.id}`} size='small'>
+        <LoadingButton
+          loading={loading}
+          onClick={() => handleAddItem(product.id)}
+          size="small"
+        >
+          Add to Cart
+        </LoadingButton>
+        <Button component={Link} to={`/catalog/${product.id}`} size="small">
           View
         </Button>
       </CardActions>
     </Card>
-  )
+  );
 }
