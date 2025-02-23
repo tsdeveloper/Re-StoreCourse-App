@@ -62,7 +62,7 @@ export default function ProductCard({ product }: Props) {
       />
       <CardContent>
         <Typography gutterBottom color="secondary" variant="h5">
-          ${(product.price / 100).toFixed(2)}
+          ${product.price.toFixed(2)}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {product.description}
