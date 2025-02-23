@@ -9,6 +9,26 @@ const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 const responseBody = (response: AxiosResponse) => response.data;
 
+const requests = {
+  get: (url: string) => axios.get(url).then(responseBody),
+  post: (url: string, body: object) => axios.post(url, body).then(responseBody),
+  put: (url: string, body: object) => axios.put(url, body).then(responseBody),
+  delete: (url: string) => axios.delete(url).then(responseBody),
+};
+
+const Catalog = {
+  list: () => requests.get("product"),
+  details: (id: number) => requests.get(`product/${id}`),
+};
+
+
+const Basket = {
+  get: () => requests.get('basket'),
+  addItem: (productId: number, quantity: number) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+  details: (id: number) => requests.get(`basket/${id}`),
+  removeItem: (productId: number, quantity: number) => requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+}
+
 axios.interceptors.response.use(
   async (response) => {
     await sleep();
@@ -46,18 +66,6 @@ axios.interceptors.response.use(
   }
 );
 
-const requests = {
-  get: (url: string) => axios.get(url).then(responseBody),
-  post: (url: string, body: object) => axios.post(url, body).then(responseBody),
-  put: (url: string, body: object) => axios.put(url, body).then(responseBody),
-  delete: (url: string) => axios.delete(url).then(responseBody),
-};
-
-const Catalog = {
-  list: () => requests.get("product"),
-  details: (id: number) => requests.get(`product/${id}`),
-};
-
 const TestError = {
   get400Error: () => requests.get("buggy/bad-request"),
   get401Error: () => requests.get("buggy/unauthorised"),
@@ -66,17 +74,10 @@ const TestError = {
   getValidationError: () => requests.get("buggy/validation-error"),
 };
 
-const Basket = {
-  get: () => requests.get('basket'),
-  addItem: (productId: number, quantity: number) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
-  details: (id: number) => requests.get(`basket/${id}`),
-  removeItem: (productId: number, quantity: number) => requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
-}
-
 const agent = {
   Catalog,
-  TestError,
   Basket,
+  TestError,
 };
 
 export default agent;
