@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { Product } from "../../app/models/product";
-import Grid from "@mui/material/Grid2";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
+import { Product } from '../../app/models/product';
+import Grid from '@mui/material/Grid2';
 import {
   Divider,
   Table,
@@ -11,10 +11,10 @@ import {
   TableContainer,
   TableRow,
   Typography,
-} from "@mui/material";
-import agent from "../../app/api/agent";
-import LoadingComponent from "../../app/layout/LoadingComponent";
-import NotFound from "../../app/errors/NotFound";
+} from '@mui/material';
+import agent from '../../app/api/agent';
+import LoadingComponent from '../../app/layout/LoadingComponent';
+import NotFound from '../../app/errors/NotFound';
 
 export default function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -40,7 +40,7 @@ export default function ProductDetails() {
         <img
           src={product.pictureUrl}
           alt={product.name}
-          style={{ width: "100%" }}
+          style={{ width: '100%' }}
         />
       </Grid>
       <Grid size={{ xs: 6 }}>
