@@ -7,13 +7,14 @@ import {
   CardHeader,
   CardMedia,
   Typography,
-} from "@mui/material";
-import { Product } from "../../app/models/product";
-import { deepOrange } from "@mui/material/colors";
-import { Link } from "react-router";
-import agent from "../../app/api/agent";
-import { useState } from "react";
-import { LoadingButton } from "@mui/lab";
+} from '@mui/material';
+import { Product } from '../../app/models/product';
+import { deepOrange } from '@mui/material/colors';
+import { Link } from 'react-router';
+import agent from '../../app/api/agent';
+import { useState } from 'react';
+import { LoadingButton } from '@mui/lab';
+import { useStoreContext } from '../../app/context/StoreContext';
 
 interface Props {
   product: Product;
@@ -21,13 +22,17 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   const [loading, setLoading] = useState(false);
+  const { setBasket } = useStoreContext();
 
   function handleAddItem(productId: number) {
     setLoading(true);
     agent.Basket.addItem(productId, 1)
+      .then((basket) => setBasket(basket))
+      .then(() => console.log('Item added to basket'))
       .catch((error) => console.log(error))
       .finally(() => setLoading(false));
   }
+
   return (
     <Card>
       <CardHeader
@@ -42,8 +47,8 @@ export default function ProductCard({ product }: Props) {
         }
         title={product.name}
         titleTypographyProps={{
-          sx: { fontWeight: "bold", color: "primary.main" },
-          variant: "h5",
+          sx: { fontWeight: 'bold', color: 'primary.main' },
+          variant: 'h5',
         }}
         subheader={
           <Typography variant="subtitle2">
@@ -54,8 +59,8 @@ export default function ProductCard({ product }: Props) {
       <CardMedia
         sx={{
           height: 140,
-          backgroundSize: "cover",
-          bgcolor: "primary.contrastText",
+          backgroundSize: 'cover',
+          bgcolor: 'primary.contrastText',
         }}
         image={product.pictureUrl}
         title={product.name}
@@ -64,7 +69,7 @@ export default function ProductCard({ product }: Props) {
         <Typography gutterBottom color="secondary" variant="h5">
           ${product.price.toFixed(2)}
         </Typography>
-        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {product.description}
         </Typography>
       </CardContent>
