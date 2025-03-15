@@ -33,7 +33,7 @@ export function StoreProvider({ children }: PropsWithChildren<unknown>) {
       items[itemIndex].quantity -= quantity;
       if (items[itemIndex].quantity <= 0) items.splice(itemIndex, 1);
       setBasket((prevState) => {
-        return { ...prevState!, items };
+        return { ...prevState!, basketItems: items };
       });
     }
   }
