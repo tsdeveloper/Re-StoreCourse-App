@@ -10,18 +10,28 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  TextField,
   Typography,
 } from '@mui/material';
 import agent from '../../app/api/agent';
 import LoadingComponent from '../../app/layout/LoadingComponent';
 import NotFound from '../../app/errors/NotFound';
+import { currencyFormat } from '../../app/util/util';
+import { useStoreContext } from '../../app/context/StoreContext';
 
 export default function ProductDetails() {
+  const { basket } = useStoreContext();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const item = basket?.basketItems.find(
+    (item) => item.productId === product?.id,
+  );
 
   useEffect(() => {
+    if (item) setQuantity(item.quantity);
     id &&
       agent.Catalog.details(parseInt(id))
         .then((response) => setProduct(response))
@@ -47,7 +57,7 @@ export default function ProductDetails() {
         <Typography variant="h3">{product.name}</Typography>
         <Divider sx={{ mb: 2 }} />
         <Typography variant="h4" color="secondary">
-          ${product.price.toFixed(2)}
+          {currencyFormat(product.price)}
         </Typography>
         <TableContainer>
           <Table>
@@ -75,6 +85,11 @@ export default function ProductDetails() {
             </TableBody>
           </Table>
         </TableContainer>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 6 }}>
+            <TextField variant="outlined"></TextField>
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
