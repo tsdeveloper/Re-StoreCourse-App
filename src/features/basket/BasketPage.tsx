@@ -19,6 +19,7 @@ import agent from '../../app/api/agent';
 import { LoadingButton } from '@mui/lab';
 import BasketSummary from './BasketSummary';
 import { currencyFormat } from '../../app/util/util';
+import { Link } from 'react-router';
 
 export function BasketPage() {
   const { basket, setBasket, removeItem } = useStoreContext();
@@ -69,7 +70,13 @@ export function BasketPage() {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  <Box display={'flex'} alignItems={'center'}>
+                  <Box
+                    component={Link}
+                    to={`/catalog/${item.productId}`}
+                    display={'flex'}
+                    alignItems={'center'}
+                    sx={{ textDecoration: 'none' }}
+                  >
                     <img
                       src={item.pictureUrl}
                       alt={item.name}

@@ -18,6 +18,7 @@ import LoadingComponent from '../../app/layout/LoadingComponent';
 import NotFound from '../../app/errors/NotFound';
 import { currencyFormat } from '../../app/util/util';
 import { useStoreContext } from '../../app/context/StoreContext';
+import { LoadingButton } from '@mui/lab';
 
 export default function ProductDetails() {
   const { basket } = useStoreContext();
@@ -37,7 +38,7 @@ export default function ProductDetails() {
         .then((response) => setProduct(response))
         .catch((error) => console.log(error))
         .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, item]);
 
   console.log(product);
 
@@ -87,7 +88,24 @@ export default function ProductDetails() {
         </TableContainer>
         <Grid container spacing={2}>
           <Grid size={{ xs: 6 }}>
-            <TextField variant="outlined"></TextField>
+            <TextField
+              variant="outlined"
+              type="number"
+              label="Quantity in Cart"
+              fullWidth
+              value={quantity}
+            />
+          </Grid>
+          <Grid size={{ xs: 6 }}>
+            <LoadingButton
+              sx={{ height: '55px' }}
+              color="primary"
+              variant="contained"
+              fullWidth
+              value={quantity}
+            >
+              {item ? 'Update Quantity' : 'Add to Cart'}
+            </LoadingButton>
           </Grid>
         </Grid>
       </Grid>
