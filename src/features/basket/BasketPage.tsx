@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { Basket } from '../../app/models/basket';
 import {
   Box,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -12,32 +10,39 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+
 import Delete from '@mui/icons-material/Delete';
 import { Add, Remove } from '@mui/icons-material';
 import { useStoreContext } from '../../app/context/StoreContext';
 import agent from '../../app/api/agent';
 import { LoadingButton } from '@mui/lab';
+import BasketSummary from './BasketSummary';
+import { currencyFormat } from '../../app/util/util';
 
 export function BasketPage() {
   const { basket, setBasket, removeItem } = useStoreContext();
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState({
+    loading: false,
+    name: '',
+  });
 
-  function handleAddItem(productId: number) {
-    setLoading(true);
+  function handleAddItem(productId: number, name: string) {
+    setStatus({ loading: true, name });
     agent.Basket.addItem(productId, 1)
       .then((basket) => setBasket(basket))
       .then(() => console.log('Item added to basket'))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => setStatus({ loading: false, name: '' }));
   }
 
-  function handleRemoveItem(productId: number, quantity = 1) {
-    setLoading(true);
+  function handleRemoveItem(productId: number, quantity = 1, name: string) {
+    setStatus({ loading: true, name });
     agent.Basket.removeItem(productId, quantity)
       .then(() => removeItem(productId, quantity))
       .then(() => console.log('Item removed from basket'))
       .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
+      .finally(() => setStatus({ loading: false, name: '' }));
   }
 
   if (!basket) return <Typography variant="h3">Basket is empty</Typography>;
@@ -74,33 +79,54 @@ export function BasketPage() {
                   </Box>
                 </TableCell>
                 <TableCell align="right" component="th" scope="row">
-                  ${item.price.toFixed(2)}
+                  {currencyFormat(item.price)}
                 </TableCell>
                 <TableCell align="right">
                   <LoadingButton
-                    loading={loading}
+                    loading={
+                      status.loading &&
+                      status.name === 'remove' + item.productId
+                    }
                     color="error"
-                    onClick={() => handleRemoveItem(item.productId)}
+                    onClick={() =>
+                      handleRemoveItem(
+                        item.productId,
+                        1,
+                        'remove' + item.productId,
+                      )
+                    }
                   >
                     <Remove />
                   </LoadingButton>
                   {item.quantity}
                   <LoadingButton
                     color="secondary"
-                    loading={loading}
-                    onClick={() => handleAddItem(item.productId)}
+                    loading={
+                      status.loading && status.name === 'add' + item.productId
+                    }
+                    onClick={() =>
+                      handleAddItem(item.productId, 'add' + item.productId)
+                    }
                   >
                     <Add />
                   </LoadingButton>
                 </TableCell>
                 <TableCell align="right">
-                  ${(item.quantity * item.price).toFixed(2)}
+                  {currencyFormat(item.quantity * item.price)}
                 </TableCell>
                 <TableCell align="right">
                   <LoadingButton
                     color="error"
-                    onClick={() => handleRemoveItem(item.productId)}
-                    loading={loading}
+                    onClick={() =>
+                      handleRemoveItem(
+                        item.productId,
+                        item.quantity,
+                        'del' + item.productId,
+                      )
+                    }
+                    loading={
+                      status.loading && status.name === 'del' + item.productId
+                    }
                   >
                     <Delete />
                   </LoadingButton>
@@ -110,6 +136,13 @@ export function BasketPage() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Grid container>
+        <Grid size={{ xs: 6 }} />
+        <Grid size={{ xs: 6 }}>
+          <BasketSummary />
+        </Grid>
+      </Grid>
     </>
   );
 }
