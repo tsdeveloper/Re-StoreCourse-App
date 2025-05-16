@@ -9,7 +9,7 @@ import {
 import { useStoreContext } from '../../app/context/StoreContext';
 import { currencyFormat } from '../../app/util/util';
 
-export default function BasketSummary({ subtotal }: Props) {
+export default function BasketSummary() {
   const { basket } = useStoreContext();
   const subTotal =
     basket?.basketItems.reduce(
