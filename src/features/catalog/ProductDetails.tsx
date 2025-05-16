@@ -2,9 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Product } from '../../app/models/product';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import {
-  Button,
   Divider,
   Table,
   TableBody,
