@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Box,
+  Button,
   Paper,
   Table,
   TableBody,
@@ -10,7 +11,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 
 import Delete from '@mui/icons-material/Delete';
 import { Add, Remove } from '@mui/icons-material';
@@ -148,6 +149,15 @@ export function BasketPage() {
         <Grid size={{ xs: 6 }} />
         <Grid size={{ xs: 6 }}>
           <BasketSummary />
+          <Button
+            component={Link}
+            to="/checkout"
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            Checkout
+          </Button>
         </Grid>
       </Grid>
     </>

@@ -1,8 +1,8 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
-import { toast } from "react-toastify";
-import { router } from "../router/Routes";
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
+import { router } from '../router/Routes';
 // import from 'react-toastify/'
-axios.defaults.baseURL = "http://localhost:5000/api";
+axios.defaults.baseURL = 'http://localhost:5000/api';
 axios.defaults.withCredentials = true;
 
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
@@ -17,17 +17,22 @@ const requests = {
 };
 
 const Catalog = {
-  list: () => requests.get("product"),
+  list: () => requests.get('product'),
   details: (id: number) => requests.get(`product/${id}`),
 };
 
-
 const Basket = {
   get: () => requests.get('basket'),
-  addItem: (productId: number, quantity: number) => requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+  addItem: (productId: number, quantity: number) =>
+    requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
   details: (id: number) => requests.get(`basket/${id}`),
-  removeItem: (productId: number, quantity: number) => requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
-}
+  removeItem: (productId: number, quantity: number) =>
+    requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+};
+
+const Checkout = {
+  list: () => requests.get('checkout'),
+};
 
 axios.interceptors.response.use(
   async (response) => {
@@ -53,30 +58,31 @@ axios.interceptors.response.use(
         toast.error(data.title);
         break;
       case 404:
-        router.navigate("/not-found", { state: { error: data } });
+        router.navigate('/not-found', { state: { error: data } });
         break;
       case 500:
-        router.navigate("/server-error", { state: { error: data } });
+        router.navigate('/server-error', { state: { error: data } });
         break;
       default:
         break;
     }
 
     return Promise.reject(error.response);
-  }
+  },
 );
 
 const TestError = {
-  get400Error: () => requests.get("buggy/bad-request"),
-  get401Error: () => requests.get("buggy/unauthorised"),
-  get404Error: () => requests.get("buggy/not-found"),
-  get500Error: () => requests.get("buggy/server-error"),
-  getValidationError: () => requests.get("buggy/validation-error"),
+  get400Error: () => requests.get('buggy/bad-request'),
+  get401Error: () => requests.get('buggy/unauthorised'),
+  get404Error: () => requests.get('buggy/not-found'),
+  get500Error: () => requests.get('buggy/server-error'),
+  getValidationError: () => requests.get('buggy/validation-error'),
 };
 
 const agent = {
   Catalog,
   Basket,
+  Checkout,
   TestError,
 };
 
