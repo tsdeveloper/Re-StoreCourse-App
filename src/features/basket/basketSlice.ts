@@ -14,9 +14,10 @@ const initialState: BasketState = {
 
 export const addBasketItemAsync = createAsyncThunk<
   Basket,
-  { productId: number; quantity: number }
->('basket/addBasketItemAsync', async ({ productId, quantity }) => {
+  { productId: number; quantity?: number }
+>('basket/addBasketItemAsync', async ({ productId, quantity = 1 }) => {
   try {
+    console.log('Adding item to basket:', productId, quantity);
     const response = await agent.Basket.addItem(productId, quantity);
     return response;
   } catch (error) {
@@ -50,7 +51,7 @@ export const basketSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(addBasketItemAsync.pending, (state, action) => {
       console.log(action);
-      state.status = 'pendingAddItem';
+      state.status = `pendingAddItem ${action.meta.arg.productId}`;
     });
     builder.addCase(addBasketItemAsync.fulfilled, (state, action) => {
       console.log(action);
@@ -58,7 +59,6 @@ export const basketSlice = createSlice({
       state.status = 'idle';
     });
     builder.addCase(addBasketItemAsync.rejected, (state) => {
-      console.log(action);
       state.status = 'idle';
     });
   },
