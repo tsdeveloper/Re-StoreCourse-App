@@ -1,0 +1,67 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Basket } from '../../app/models/basket';
+import agent from '../../app/api/agent';
+
+interface BasketState {
+  basket: Basket | null;
+  status: string;
+}
+
+const initialState: BasketState = {
+  basket: null,
+  status: 'idle',
+};
+
+export const addBasketItemAsync = createAsyncThunk<
+  Basket,
+  { productId: number; quantity: number }
+>('basket/addBasketItemAsync', async ({ productId, quantity }) => {
+  try {
+    const response = await agent.Basket.addItem(productId, quantity);
+    return response;
+  } catch (error) {
+    console.error('Failed to add item to basket:', error);
+    throw error;
+  }
+});
+
+export const basketSlice = createSlice({
+  name: 'basket',
+  initialState,
+  reducers: {
+    setBasket: (state, action) => {
+      state.basket = action.payload;
+    },
+    clearBasket: (state) => {
+      state.basket = null;
+    },
+    removeItem: (state, action) => {
+      const { productId, quantity } = action.payload;
+      const itemIndex = state.basket?.basketItems.findIndex(
+        (item) => item.productId === productId,
+      );
+      if (itemIndex == undefined || itemIndex == -1) return;
+      state.basket!.basketItems[itemIndex].quantity -= quantity;
+      if (state.basket!.basketItems[itemIndex].quantity == 0) {
+        state.basket?.basketItems.splice(itemIndex, 1);
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(addBasketItemAsync.pending, (state, action) => {
+      console.log(action);
+      state.status = 'pendingAddItem';
+    });
+    builder.addCase(addBasketItemAsync.fulfilled, (state, action) => {
+      console.log(action);
+      state.basket = action.payload;
+      state.status = 'idle';
+    });
+    builder.addCase(addBasketItemAsync.rejected, (state) => {
+      console.log(action);
+      state.status = 'idle';
+    });
+  },
+});
+
+export const { setBasket, clearBasket, removeItem } = basketSlice.actions;

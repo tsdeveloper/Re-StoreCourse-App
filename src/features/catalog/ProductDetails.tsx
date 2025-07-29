@@ -19,13 +19,16 @@ import NotFound from '../../app/errors/NotFound';
 import { currencyFormat } from '../../app/util/util';
 import { useStoreContext } from '../../app/context/StoreContext';
 import { LoadingButton } from '@mui/lab';
+import { useAppDispatch, useAppSelector } from '../../app/store/configureStore';
+import { removeItem, setBasket } from '../basket/basketSlice';
 
 export default function ProductDetails() {
-  const { basket, setBasket, removeItem } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState({
     loading: false,
@@ -41,16 +44,17 @@ export default function ProductDetails() {
     setQuantity(parseInt(event.target.value));
   }
 
-  function handleAUpateCart(name: string) {
+  function handleUpdateCart(name: string) {
     setStatus({
       loading: false,
       name: name,
     });
     setSubmitting(true);
+    if (quantity <= 0) return;
     if (!item || quantity > item.quantity) {
       const updateQuantity = item ? quantity - item.quantity : quantity;
       agent.Basket.addItem(product!.id, updateQuantity)
-        .then((basket) => setBasket(basket))
+        .then((basket) => dispatch(setBasket(basket)))
         .catch((error) => console.log(error))
         .finally(() => {
           setStatus({
@@ -62,7 +66,11 @@ export default function ProductDetails() {
     } else {
       const updateQuantity = item.quantity - quantity;
       agent.Basket.removeItem(product!.id, updateQuantity)
-        .then(() => removeItem(product!.id, updateQuantity))
+        .then(() =>
+          dispatch(
+            removeItem({ productId: product?.id!, quantity: updateQuantity }),
+          ),
+        )
         .catch((error) => console.log(error))
         .finally(() => {
           setStatus({
@@ -145,7 +153,7 @@ export default function ProductDetails() {
               loading={
                 status.loading && status.name === 'changeCart' + product.id
               }
-              onClick={() => handleAUpateCart('changeCart' + product.id)}
+              onClick={() => handleUpdateCart('changeCart' + product.id)}
               sx={{ height: '55px' }}
               color="primary"
               variant="contained"
