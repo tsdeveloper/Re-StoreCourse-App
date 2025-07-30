@@ -26,6 +26,18 @@ export const addBasketItemAsync = createAsyncThunk<
   }
 });
 
+export const removeBasketItemAsync = createAsyncThunk<
+  void,
+  { productId: number; quantity: number }
+>('basket/removeBasketItemAsync', async ({ productId, quantity }) => {
+  try {
+    await agent.Basket.removeItem(productId, quantity);
+  } catch (error) {
+    console.error('Failed to remove item from basket:', error);
+    throw error;
+  }
+});
+
 export const basketSlice = createSlice({
   name: 'basket',
   initialState,
@@ -51,14 +63,37 @@ export const basketSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(addBasketItemAsync.pending, (state, action) => {
       console.log(action);
-      state.status = `pendingAddItem ${action.meta.arg.productId}`;
+      state.status = 'pendingAddItem' + action.meta.arg.productId;
     });
+
     builder.addCase(addBasketItemAsync.fulfilled, (state, action) => {
       console.log(action);
       state.basket = action.payload;
       state.status = 'idle';
     });
+
     builder.addCase(addBasketItemAsync.rejected, (state) => {
+      state.status = 'idle';
+    });
+
+    builder.addCase(removeBasketItemAsync.pending, (state, action) => {
+      state.status = 'pendingRemoveItem' + action.meta.arg.productId;
+    });
+
+    builder.addCase(removeBasketItemAsync.fulfilled, (state, action) => {
+      const { productId, quantity } = action.meta.arg;
+      const itemIndex = state.basket?.basketItems.findIndex(
+        (item) => item.productId === productId,
+      );
+      if (itemIndex === undefined || itemIndex === -1) return;
+      state.basket!.basketItems[itemIndex].quantity -= quantity;
+      if (state.basket!.basketItems[itemIndex].quantity === 0) {
+        state.basket?.basketItems.splice(itemIndex, 1);
+      }
+      state.status = 'idle';
+    });
+
+    builder.addCase(removeBasketItemAsync.rejected, (state) => {
       state.status = 'idle';
     });
   },
