@@ -26,9 +26,6 @@ export function BasketPage() {
   const dispatch = useAppDispatch();
 
   if (!basket) return <Typography variant="h3">Basket is empty</Typography>;
-
-  console.log(basket);
-
   return (
     <>
       <TableContainer component={Paper}>
