@@ -1,6 +1,6 @@
 name: Notificação de PR no Discord com Status
 
-# Este workflow é acionado quando um pull request é fechado (fechado ou mesclado)
+# Este workflow é acionado quando um pull request é fechado (fechado ou mesclado) treste
 on:
   pull_request:
     types: [open]
