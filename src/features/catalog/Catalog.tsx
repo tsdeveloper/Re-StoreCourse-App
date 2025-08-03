@@ -13,6 +13,7 @@ const sortOptions = [
     { id: uuidv4(), value: 'name', label: 'Price - Low to high'},
     { id: uuidv4(), value: 'name', label: 'Price - Low to high'},
     { id: uuidv4(), value: 'name', label: 'Price - Low to high'},
+    { id: uuidv4(), value: 'name', label: 'Price - Low to high'},
 ];
 
 export default function Catalog() {
