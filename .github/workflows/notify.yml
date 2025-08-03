@@ -1,42 +1,14 @@
-name: Notificação de PR no Discord
-
+name: Discord Webhook Messages
 on:
-  pull_request:
-    types: [opened]
-    branches:
-      - develop
-
+  release:
+    types: [published]
 jobs:
-  notify:
+  run:
     runs-on: ubuntu-latest
     steps:
-      - name: Enviar notificação para o Discord
-        uses: sarisia/actions-discord-webhook@v1.0.3
+      - uses: actions/checkout@v2
+      - name: Run Discord Webhook
+        uses: bythope/discord-webhook-messages@v1.1.0
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          # O conteúdo da mensagem que será enviada para o Discord
-          # Você pode customizar a mensagem com variáveis do GitHub
-          content: 'Novo Pull Request aberto!'
-          username: GitHub Actions
-          color: '0370f8'
-          # Adicionando um embed para uma visualização mais detalhada
-          embeds: |
-            [
-              {
-                "title": "Novo Pull Request: #${{ github.event.pull_request.number }}",
-                "url": "${{ github.event.pull_request.html_url }}", 
-                "description": "PR **${{ github.event.pull_request.title }}** por **${{ github.event.pull_request.user.login }}**",
-                "fields": [
-                  {
-                    "name": "Branch Base",
-                    "value": "${{ github.event.pull_request.base.ref }}",
-                    "inline": true
-                  },
-                  {
-                    "name": "Branch de Origem",
-                    "value": "${{ github.event.pull_request.head.ref }}",
-                    "inline": true
-                  }
-                ]
-              }
-            ]
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          handler: 'release'
