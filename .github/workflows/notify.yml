@@ -1,14 +1,41 @@
-name: Discord Webhook Messages
+name: Notificação de PR no Discord com Status
+
+# Este workflow é acionado quando um pull request é fechado (fechado ou mesclado)
 on:
-  release:
-    types: [published]
+  pull_request:
+    types: [open]
+    branches:
+      - develop
+
 jobs:
-  run:
+  # Este job principal simula um processo que poderia falhar ou ter sucesso
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Run Discord Webhook
-        uses: bythope/discord-webhook-messages@v1.1.0
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Simular um processo
+        run: echo "Compilando o projeto..."
+        # Você pode adicionar aqui os seus passos de build, teste, etc.
+        # Por exemplo:
+        # run: npm install
+        # run: npm test
+
+  # Este job é acionado sempre, independentemente do sucesso ou falha do job 'build'
+  discord-notification:
+    runs-on: ubuntu-latest
+    needs: build # Garante que este job só rode depois que o job 'build' for concluído
+    if: always() # Ação só roda se o PR for mesclado
+    steps:
+      - name: Enviar notificação para o Discord
+        uses: sarisia/actions-status-discord@v1.2.0
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          handler: 'release'
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          title: "Status do Pull Request Mesclado"
+          description: |
+            O Pull Request **#${{ github.event.pull_request.number }}** foi mesclado na branch `master`!
+            - **Autor**: ${{ github.event.pull_request.user.login }}
+            - **Título**: ${{ github.event.pull_request.title }}
+          color: 00FF00 # Cor verde para sucesso
+          status: success
