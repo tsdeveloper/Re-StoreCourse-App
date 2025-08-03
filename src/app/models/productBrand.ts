@@ -1,6 +1,6 @@
-import { Product } from "./product";
+import type { Product } from './product';
 
-export interface ProductBrand  {
-  name: string;
-  productList: Product[];
+export interface ProductBrand {
+	name: string;
+	productList: Product[];
 }
