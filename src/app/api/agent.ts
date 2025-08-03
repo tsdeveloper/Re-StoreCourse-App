@@ -52,7 +52,7 @@ axios.interceptors.response.use(
           }
           throw modelStateErrors.flat();
         }
-        toast.error(data);
+        toast.error(data.title);
         break;
       case 401:
         toast.error(data.title);
