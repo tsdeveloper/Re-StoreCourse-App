@@ -11,14 +11,14 @@ const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
 const responseBody = (response: AxiosResponse) => response.data;
 
 const requests = {
-	get: (url: string) => axios.get(url).then(responseBody),
+	get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
 	post: (url: string, body: object) => axios.post(url, body).then(responseBody),
 	put: (url: string, body: object) => axios.put(url, body).then(responseBody),
 	delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
 const Catalog = {
-	list: () => requests.get('product'),
+	list: (params: URLSearchParams) => requests.get('product', params),
 	details: (id: number) => requests.get(`product/${id}`),
 	fetchFilters: () => requests.get(`product/filters`),
 };
