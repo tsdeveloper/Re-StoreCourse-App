@@ -13,8 +13,7 @@ interface CatalogState {
 	status: string;
 	brands: string[],
 	types: string[],
-	productsParams: ProductParams;
-
+	productParams: ProductParams;
 }
 
 const productsAdapter = createEntityAdapter<Product>();
@@ -27,7 +26,7 @@ function getAxiosParams(productsParams: ProductParams) {
 
 	if (productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
 	if (productsParams.brands) params.append('brands', productsParams.brands.toString())
-	if (productsParams.types) params.append('searchTerm', productsParams.types.toString())
+	if (productsParams.types) params.append('types', productsParams.types.toString())
 	return params;
 }
 
@@ -37,7 +36,7 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
 
 		console.log('fetchProductsAsync');
 		console.log(thunkAPI.getState());
-		const params = getAxiosParams(thunkAPI.getState().catalog.productsParams);
+		const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
 		try {
 			const response = await agent.Catalog.list(params);
 			return response;
@@ -89,15 +88,15 @@ export const catalogSlice = createSlice({
 		status: 'idle',
 		brands: [],
 		types: [],
-		productsParams: initParams()
+		productParams: initParams()
 	}),
 	reducers: {
 		setProductParams: (state, action) => {
 			state.productsLoaded = false;
-			state.productsParams = {...state.productsParams, ...action.payload};
+			state.productParams = {...state.productParams, ...action.payload};
 		},
 		resetProductParams: (state) => {
-			state.productsParams = initParams();
+			state.productParams = initParams();
 		}
 	},
 	extraReducers: (builder) => {
