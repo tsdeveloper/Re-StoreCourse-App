@@ -23,7 +23,8 @@ function getAxiosParams(productsParams: ProductParams) {
 	params.append('pageNumber', productsParams.pageNumber.toString())
 	params.append('pageSize', productsParams.pageSize.toString())
 	params.append('orderBy', productsParams.orderBy.toString())
-
+	params.append('direction', productsParams.direction.toString())
+    console.log(`URLSearchParams direction ${productsParams.direction.toString()}`);
 	if (productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
 	if (productsParams.brands) params.append('brands', productsParams.brands.toString())
 	if (productsParams.types) params.append('types', productsParams.types.toString())
@@ -34,7 +35,7 @@ export const fetchProductsAsync = createAsyncThunk<Product[], void, {state: Root
 	'catalog/fetchProductsAsync',
 	async (_, thunkAPI) => {
 
-		console.log('fetchProductsAsync');
+
 		console.log(thunkAPI.getState());
 		const params = getAxiosParams(thunkAPI.getState().catalog.productParams);
 		try {
@@ -76,7 +77,8 @@ function initParams() {
 	return {
 		pageNumber: 1,
 		pageSize: 6,
-		orderBy: 'name'
+		orderBy: 'name',
+        direction: 'asc'
 	}
 }
 
@@ -92,7 +94,8 @@ export const catalogSlice = createSlice({
 	}),
 	reducers: {
 		setProductParams: (state, action) => {
-			state.productsLoaded = false;
+			console.log(action)
+            state.productsLoaded = false;
 			state.productParams = {...state.productParams, ...action.payload};
 		},
 		resetProductParams: (state) => {
@@ -144,7 +147,6 @@ export const catalogSlice = createSlice({
 			console.log(action);
 			state.status = 'idle';
 		});
-
 	},
 });
 

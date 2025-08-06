@@ -33,7 +33,7 @@ export default function ProductDetails() {
 	);
 	const { status: productStatus } = useAppSelector((state) => state.catalog);
 	const [quantity, setQuantity] = useState(0);
-	const item = basket?.basketItems.find(
+	const item = basket?.basketItems?.find(
 		(item) => item.productId === product?.id,
 	);
 

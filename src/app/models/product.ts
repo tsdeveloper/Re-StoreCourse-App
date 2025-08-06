@@ -16,6 +16,7 @@ export interface Product {
 
 export interface ProductParams {
 	orderBy: string;
+    direction: string;
 	searchTerm?: string;
 	types?: string[];
 	brands?: string[];
