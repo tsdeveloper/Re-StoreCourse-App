@@ -22,9 +22,9 @@ function getAxiosParams(productsParams: ProductParams) {
 	const params = new URLSearchParams();
 	params.append('pageNumber', productsParams.pageNumber.toString())
 	params.append('pageSize', productsParams.pageSize.toString())
-	params.append('orderBy', productsParams.orderBy.toString())
-	params.append('direction', productsParams.direction.toString())
-    console.log(`URLSearchParams direction ${productsParams.direction.toString()}`);
+    const parts = productsParams.orderBy.toString().match(/(Desc|Asc)/);
+    params.append('orderBy', productsParams.orderBy.toString().replace("Desc", ""))
+	params.append('direction', parts ? parts[0] : productsParams.direction.toString())
 	if (productsParams.searchTerm) params.append('searchTerm', productsParams.searchTerm)
 	if (productsParams.brands) params.append('brands', productsParams.brands.toString())
 	if (productsParams.types) params.append('types', productsParams.types.toString())

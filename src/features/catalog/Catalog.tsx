@@ -18,9 +18,9 @@ import ProductSearch from "./ProductSearch.tsx";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup.tsx";
 
 const sortOptions = [
-    {value: 'name', nameOrderby: "name",  label: 'Alphabetical', direction: "asc"},
-    {value: 'priceDesc', nameOrderby: "price", label: 'Price - High to low', direction: "desc"},
-    {value: 'price', nameOrderby: "price", label: 'Price - Low to high', direction: "asc"},
+    {value: 'name', label: 'Alphabetical'},
+    {value: 'priceDesc', label: 'Price - High to low'},
+    {value: 'price', label: 'Price - Low to high'},
 ];
 
 export default function Catalog() {
@@ -56,13 +56,16 @@ export default function Catalog() {
                     <RadioButtonGroup
                         selectedValue={productParams.orderBy}
                         options={sortOptions}
-                        onChange={(selectOption) => {
-                            if (selectOption)
+                        // onChange={(e) => dispatch(setProductParams({orderBy: e.value}))}
+                        onChange={(options) => {
+
+                            if (options)
                             dispatch(setProductParams({
-                                orderBy: selectOption.nameOrderby,
-                            direction: selectOption.direction}
-                            ))}
+                                orderBy: options.value
+                            }));
+                            }
                         }
+
                     />
                 </Paper>
                 <Paper sx={{mb: 2, p: 2}}>
