@@ -63,19 +63,16 @@ export const basketSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder.addCase(addBasketItemAsync.pending, (state, action) => {
-			console.log(action);
 			state.status = 'pendingAddItem' + action.meta.arg.productId;
 		});
 
 		builder.addCase(addBasketItemAsync.fulfilled, (state, action) => {
-			console.log(action);
 			state.basket = action.payload;
 			state.status = 'idle';
 		});
 
-		builder.addCase(addBasketItemAsync.rejected, (state, action) => {
+		builder.addCase(addBasketItemAsync.rejected, (state) => {
 			state.status = 'idle';
-			console.log(action.payload);
 		});
 
 		builder.addCase(removeBasketItemAsync.pending, (state, action) => {
@@ -95,9 +92,8 @@ export const basketSlice = createSlice({
 			state.status = 'idle';
 		});
 
-		builder.addCase(removeBasketItemAsync.rejected, (state, action) => {
+		builder.addCase(removeBasketItemAsync.rejected, (state) => {
 			state.status = 'idle';
-			console.log(action.payload);
 		});
 	},
 });

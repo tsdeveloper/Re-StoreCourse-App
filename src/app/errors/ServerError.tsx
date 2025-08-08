@@ -13,7 +13,6 @@ export default function ServerError() {
 					</Typography>
 					<Divider />
 					<Typography variant="body1">
-						{console.log(state.error)}
 						{state.error.detail || 'Internal server error'}
 					</Typography>
 				</>

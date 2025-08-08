@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import {LoadingButton} from "@mui/lab";
 import {
 	Avatar,
 	Button,
@@ -28,10 +28,6 @@ export default function ProductCard({ product }: Props) {
 		<Card>
 			<CardHeader
 				avatar={
-					// <Avatar
-					// src={product.pictureUrl}>
-					//   {product.name.charAt(0).toUpperCase()}
-					// </Avatar>
 					<Avatar sx={{ bgcolor: deepOrange[300] }}>
 						{product.name.charAt(0).toUpperCase()}
 					</Avatar>

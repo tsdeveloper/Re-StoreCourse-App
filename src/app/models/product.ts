@@ -18,8 +18,8 @@ export interface ProductParams {
 	orderBy: string;
     direction: string;
 	searchTerm?: string;
-	types?: string[];
-	brands?: string[];
+	types: string[];
+	brands: string[];
 	pageNumber: number;
 	pageSize: number;
 }
