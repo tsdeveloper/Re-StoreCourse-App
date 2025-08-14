@@ -1,0 +1,4 @@
+ git push origin --delete develop-old
+  git push origin --delete feature/add-checkout-page
+  git push origin --delete feature/add-pagination-filter
+  git push origin --delete feature/remove-item-basket
