@@ -1,33 +1,18 @@
-import LockClockOutlinedIcon from '@mui/icons-material/LockClockOutlined';
-import {
-    Avatar,
-    Box,
-    Container, CssBaseline,
-    Paper,
-    TextField,
-    Typography
-} from "@mui/material";
-import Grid from "@mui/material/Grid";
-import {Link, useNavigate} from "react-router";
-import {FieldValues, useForm} from "react-hook-form";
-import {LoadingButton} from "@mui/lab";
+import { LoadingButton } from "@mui/lab";
+import {Avatar, Box, Container, CssBaseline, Grid, Paper, TextField, Typography} from "@mui/material";
+import {Link} from "react-router";
+import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {formLoginSchema} from "../../app/util/validateErrorInput.ts";
-import {useAppDispatch} from "../../app/store/configureStore.ts";
-import {signInUser} from "./accountSlice.ts";
+import {formRegisterSchema} from "../../app/util/validateErrorInput.ts";
+import {useForm} from "react-hook-form";
+import agent from "../../app/api/agent.ts";
 
-export default function Login() {
-    const  navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const {register, handleSubmit, formState: {isSubmitting, errors, isValid}} = useForm({
-        resolver: yupResolver(formLoginSchema),
+export default function Register(){
+
+    const { register, handleSubmit, formState: {isSubmitting, errors, isValid }} = useForm({
+        resolver: yupResolver(formRegisterSchema),
         mode: "onTouched",
     })
-
-    async function submitForm(data: FieldValues) {
-      await dispatch(signInUser(data));
-      navigate('/catalog')
-    }
 
     return (
         <Container component={Paper} maxWidth="xs"
@@ -38,9 +23,9 @@ export default function Login() {
                 <LockClockOutlinedIcon/>
             </Avatar>
             <Typography component="h1" variant="h5">
-                Sign in
+                Register
             </Typography>
-            <Box maxWidth="md" component="form" onSubmit={handleSubmit(submitForm)} noValidate >
+            <Box maxWidth="md" component="form" onSubmit={handleSubmit(data => agent.Account.register(data) )} noValidate >
                 <TextField
                     margin="normal"
                     fullWidth
@@ -50,6 +35,15 @@ export default function Login() {
                     error={!!errors.username}
                     helperText={errors?.username?.message as string}
                 />
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    label="Email"
+                    {...register('email', {required: true})}
+                    error={!!errors.email}
+                    helperText={errors?.email?.message as string}
+                />
+
                 <TextField
                     margin="normal"
                     fullWidth
@@ -64,12 +58,12 @@ export default function Login() {
                                type="submit" fullWidth
                                variant="contained" sx={{mt: 3, mb: 2}}
                 >
-                    Sign In
+                    Register
                 </LoadingButton>
                 <Grid container>
                     <Grid>
                         <Link to="/register">
-                            {"Don't have an account? Sign Up"}
+                            {"Already have an account? Sign in"}
                         </Link>
                     </Grid>
                 </Grid>

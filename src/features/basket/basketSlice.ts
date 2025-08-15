@@ -109,7 +109,7 @@ export const basketSlice = createSlice({
             state.status = 'idle';
 		});
 
-        builder.addMatcher(isAnyOf(addBasketItemAsync.rejected, fetchBasketAsync.rejected), (state, action) => {
+        builder.addMatcher(isAnyOf(addBasketItemAsync.rejected, fetchBasketAsync.rejected), (state) => {
             state.status = 'idle';
         });
 	},

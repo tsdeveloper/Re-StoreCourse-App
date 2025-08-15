@@ -10,7 +10,7 @@ import NotFound from '../errors/NotFound';
 import ServerError from '../errors/ServerError';
 import App from '../layout/App';
 import Login from "../../features/account/Login";
-import Register from "../../features/account/Resgiter.tsx";
+import Register from "../../features/account/Register.tsx";
 
 export const router = createBrowserRouter([
 	{
