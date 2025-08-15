@@ -4,9 +4,7 @@ import {useAppDispatch, useAppSelector} from '../../app/store/configureStore';
 import {fetchFiltersAsync, fetchProductsAsync, productSelectors, setPageNumber, setProductParams} from './catalogSlice';
 import ProductList from './ProductList';
 import Grid from "@mui/material/Grid";
-import {
-    Paper
-} from "@mui/material";
+import {Paper} from "@mui/material";
 import ProductSearch from "./ProductSearch.tsx";
 import RadioButtonGroup from "../../app/components/RadioButtonGroup.tsx";
 import CheckboxButtons from "../../app/components/CheckboxButtons.tsx";
@@ -22,7 +20,6 @@ export default function Catalog() {
     const products = useAppSelector(productSelectors.selectAll);
     const {
         productsLoaded,
-        status,
         filtersLoaded,
         types,
         brands,
@@ -43,8 +40,6 @@ export default function Catalog() {
     if (!filtersLoaded)
         return <LoadingComponent message="Loading product..."/>;
 
-    console.log(`products:`)
-    console.log(products)
     return (
         <Grid container columnSpacing={4}>
             <Grid size={{xs: 3}}>
@@ -86,12 +81,12 @@ export default function Catalog() {
                 <ProductList products={products}/>
             </Grid>
 
-            <Grid size={{xs: 9}} sx={{mt: 3 }}>
+            <Grid size={{xs: 9}} sx={{mt: 3}}>
                 {metaData &&
-                <AppPagination
-                    metaData={metaData}
-                    onPageChange={(page: number) => dispatch(setPageNumber({pageNumber: page}))}
-                />
+                    <AppPagination
+                        metaData={metaData}
+                        onPageChange={(page: number) => dispatch(setPageNumber({pageNumber: page}))}
+                    />
                 }
 
             </Grid>
