@@ -1,18 +1,33 @@
 import { LoadingButton } from "@mui/lab";
 import {Avatar, Box, Container, CssBaseline, Grid, Paper, TextField, Typography} from "@mui/material";
-import {Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {formRegisterSchema} from "../../app/util/validateErrorInput.ts";
 import {useForm} from "react-hook-form";
 import agent from "../../app/api/agent.ts";
+import {toast} from "react-toastify";
 
 export default function Register(){
-
-    const { register, handleSubmit, formState: {isSubmitting, errors, isValid }} = useForm({
+    const navigate = useNavigate();
+    const { register, handleSubmit, setError, formState: { isSubmitting, errors, isValid }} = useForm({
+        mode: "all",
         resolver: yupResolver(formRegisterSchema),
-        mode: "onTouched",
     })
+    console.log(errors);
+    function handleApiErrors(errors: any) {
+        if (errors){
+            errors.forEach((error: string) => {
+                if (error.includes('Password')) {
+                    setError('password', {message: error})
+                } else if (error.includes('Email')){
+                    setError('email', {message: error})
+                } else if (error.includes('Username')){
+                    setError('username', {message: error})
+                }
+            });
+        }
+    }
 
     return (
         <Container component={Paper} maxWidth="xs"
@@ -25,23 +40,34 @@ export default function Register(){
             <Typography component="h1" variant="h5">
                 Register
             </Typography>
-            <Box maxWidth="md" component="form" onSubmit={handleSubmit(data => agent.Account.register(data) )} noValidate >
+            <Box maxWidth="md" component="form"
+                 onSubmit={handleSubmit(data =>
+                     agent.Account.register(data)
+                         .then(() => {
+                             toast.success('Registration successful - you can now login')
+                             navigate('/login');
+                         })
+                         .catch(error => handleApiErrors(error)))} noValidate
+            sx={{ mt: 1}}>
                 <TextField
                     margin="normal"
                     fullWidth
                     label="Username"
                     autoFocus
-                    {...register('username', {required: 'Username is required'})}
+                    {...register('username')}
                     error={!!errors.username}
-                    helperText={errors?.username?.message as string}
+                    helperText={errors?.username?.message?.toString()}
+
                 />
                 <TextField
                     margin="normal"
                     fullWidth
                     label="Email"
-                    {...register('email', {required: true})}
+                    {...register('email', {
+                        required: 'Email is required',
+                    })}
                     error={!!errors.email}
-                    helperText={errors?.email?.message as string}
+                    helperText={errors?.email?.message?.toString()}
                 />
 
                 <TextField
@@ -49,9 +75,9 @@ export default function Register(){
                     fullWidth
                     label="Password"
                     type="password"
-                    {...register('password', {required: true})}
+                    {...register('password')}
                     error={!!errors.password}
-                    helperText={errors?.password?.message as string}
+                    helperText={errors?.password?.message?.toString()}
                 />
                 <LoadingButton loading={isSubmitting}
                                disabled={!isValid}
@@ -60,6 +86,7 @@ export default function Register(){
                 >
                     Register
                 </LoadingButton>
+
                 <Grid container>
                     <Grid>
                         <Link to="/register">

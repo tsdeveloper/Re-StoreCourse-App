@@ -45,6 +45,19 @@ export const fetchCurrentUser = createAsyncThunk<User>(
     }
 )
 
+export const registerUser = createAsyncThunk<User, FieldValues>(
+    'account/signInUser',
+    async (data, thunkAPI) => {
+        try {
+            const user = await agent.Account.register(data);
+            localStorage.setItem('user', JSON.stringify(user));
+            return user;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({error: error.data})
+        }
+    }
+)
+
 export const accountSlice = createSlice({
     name: 'account',
     initialState,

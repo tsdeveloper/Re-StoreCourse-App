@@ -16,7 +16,7 @@ export default function SignedInMenu() {
     };
 
     return (
-        <div>
+        <>
             <Button
                 color='inherit'
                 onClick={handleClick}
@@ -39,6 +39,6 @@ export default function SignedInMenu() {
                 <MenuItem onClick={handleClose}>My Orders</MenuItem>
                 <MenuItem onClick={() => dispatch(singOut())}>Logout</MenuItem>
             </Menu>
-        </div>
+        </>
     );
 }
