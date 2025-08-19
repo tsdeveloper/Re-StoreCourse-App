@@ -2,6 +2,7 @@ import {Button, Fade, Menu, MenuItem} from "@mui/material";
 import {useState} from "react";
 import {useAppDispatch, useAppSelector} from "../store/configureStore.ts";
 import {singOut} from "../../features/account/accountSlice.ts";
+import {clearBasket} from "../../features/basket/basketSlice.ts";
 
 export default function SignedInMenu() {
     const dispatch = useAppDispatch();
@@ -37,7 +38,10 @@ export default function SignedInMenu() {
             >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My Orders</MenuItem>
-                <MenuItem onClick={() => dispatch(singOut())}>Logout</MenuItem>
+                <MenuItem onClick={() => {
+                    dispatch(clearBasket());
+                    dispatch(singOut());
+                }}>Logout</MenuItem>
             </Menu>
         </>
     );

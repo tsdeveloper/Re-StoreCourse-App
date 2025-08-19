@@ -1,11 +1,11 @@
 import * as yup from "yup";
 
-export const formLoginSchema = yup.object().shape({
+export const checkValidationLogin = yup.object().shape({
     username: yup.string().required('Username is required'),
     password: yup.string().required('Password is required'),
 })
 
-export const formRegisterSchema = yup.object().shape({
+export const checkValidationRegister = yup.object().shape({
         username: yup.string().required('Username is required').test('isUserNamePattern', ()=> {
        return 'Username need max length 15 and min length 6'
     }, (value ) => {

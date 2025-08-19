@@ -12,7 +12,7 @@ import {Link, useNavigate} from "react-router";
 import {FieldValues, useForm} from "react-hook-form";
 import {LoadingButton} from "@mui/lab";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {formLoginSchema} from "../../app/util/validateErrorInput.ts";
+import {checkValidationLogin} from "../../app/util/validateErrorInput.ts";
 import {useAppDispatch} from "../../app/store/configureStore.ts";
 import {signInUser} from "./accountSlice.ts";
 
@@ -20,13 +20,17 @@ export default function Login() {
     const  navigate = useNavigate();
     const dispatch = useAppDispatch();
     const {register, handleSubmit, formState: {isSubmitting, errors, isValid}} = useForm({
-        resolver: yupResolver(formLoginSchema),
+        resolver: yupResolver(checkValidationLogin),
         mode: "onTouched",
     })
 
     async function submitForm(data: FieldValues) {
-      await dispatch(signInUser(data));
-      navigate('/catalog')
+        try {
+            await dispatch(signInUser(data));
+            navigate('/catalog')
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

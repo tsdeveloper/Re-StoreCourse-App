@@ -3,7 +3,7 @@ import {Avatar, Box, Container, CssBaseline, Grid, Paper, TextField, Typography}
 import {Link, useNavigate} from "react-router";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {formRegisterSchema} from "../../app/util/validateErrorInput.ts";
+import {checkValidationRegister} from "../../app/util/validateErrorInput.ts";
 import {useForm} from "react-hook-form";
 import agent from "../../app/api/agent.ts";
 import {toast} from "react-toastify";
@@ -12,7 +12,7 @@ export default function Register(){
     const navigate = useNavigate();
     const { register, handleSubmit, setError, formState: { isSubmitting, errors, isValid }} = useForm({
         mode: "all",
-        resolver: yupResolver(formRegisterSchema),
+        resolver: yupResolver(checkValidationRegister),
     })
     console.log(errors);
     function handleApiErrors(errors: any) {
