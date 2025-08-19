@@ -8,7 +8,7 @@ import {
     Typography
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {Link, useNavigate} from "react-router";
+import {Link, useLocation, useNavigate} from "react-router";
 import {FieldValues, useForm} from "react-hook-form";
 import {LoadingButton} from "@mui/lab";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -18,6 +18,7 @@ import {signInUser} from "./accountSlice.ts";
 
 export default function Login() {
     const  navigate = useNavigate();
+    const location = useLocation();
     const dispatch = useAppDispatch();
     const {register, handleSubmit, formState: {isSubmitting, errors, isValid}} = useForm({
         resolver: yupResolver(checkValidationLogin),
@@ -27,7 +28,7 @@ export default function Login() {
     async function submitForm(data: FieldValues) {
         try {
             await dispatch(signInUser(data));
-            navigate('/catalog')
+            navigate(location.state?.form || '/catalog' )
         } catch (error) {
             console.log(error);
         }
