@@ -2,6 +2,7 @@ import axios, {type AxiosError, type AxiosResponse} from 'axios';
 import {toast} from 'react-toastify';
 import {router} from '../router/Routes';
 import {PaginatedResponse} from "../models/pagination.ts";
+import {store} from "../store/configureStore.ts";
 
 // import from 'react-toastify/'
 axios.defaults.baseURL = 'http://localhost:5000/api';
@@ -10,6 +11,12 @@ axios.defaults.withCredentials = true;
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 const responseBody = (response: AxiosResponse) => response.data;
+
+axios.interceptors.request.use(config => {
+    const token = store.getState().account.user?.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+})
 
 const requests = {
     get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
@@ -33,6 +40,12 @@ const Basket = {
         requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
 };
 
+const Account = {
+    login: (values: any) => requests.post('account/login', values),
+    register: (values: any) => requests.post('account/register', values),
+    currentUser: () => requests.get('account/currentUser'),
+}
+
 const Checkout = {
     list: () => requests.get('checkout'),
 };
@@ -40,17 +53,15 @@ const Checkout = {
 axios.interceptors.response.use(
     async (response) => {
         await sleep();
-        console.log(response);
         const pagination = response.headers['pagination'];
         if (pagination) {
             response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
-            console.log(response);
-            return response;
+                      return response;
         }
         return response;
     },
     (error: AxiosError) => {
-        const {data, status} = error.response as AxiosResponse;
+        const {data, status, statusText} = error.response as AxiosResponse;
         switch (status) {
             case 400:
                 if (data.errors) {
@@ -65,7 +76,7 @@ axios.interceptors.response.use(
                 toast.error(data.title);
                 break;
             case 401:
-                toast.error(data.title);
+                toast.error(data.title || statusText);
                 break;
             case 404:
                 router.navigate('/not-found', {state: {error: data}});
@@ -94,6 +105,7 @@ const agent = {
     Basket,
     Checkout,
     TestError,
+    Account,
 };
 
 export default agent;

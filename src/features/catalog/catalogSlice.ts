@@ -117,9 +117,7 @@ export const catalogSlice = createSlice({
 		});
 
 		builder.addCase(fetchProductsAsync.fulfilled, (state, action) => {
-			console.log('fetchProductsAsync');
-			console.log(action)
-            productsAdapter.setAll(state, action.payload);
+		            productsAdapter.setAll(state, action.payload);
 			state.status = 'idle';
 			state.productsLoaded = true;
 		});
