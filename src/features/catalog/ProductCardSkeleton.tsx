@@ -25,7 +25,7 @@ export default function ProductCardSkeleton(){
           </CardContent>
 
           <CardContent>
-              <>Ï
+              <>
                   <Skeleton animation={"wave"} height={10} width={"40%"} />
                   <Skeleton animation={"wave"} height={10} width={"20%"} />
               </>
