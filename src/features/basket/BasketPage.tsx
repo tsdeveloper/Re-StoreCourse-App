@@ -2,16 +2,15 @@ import { Add, Remove } from '@mui/icons-material';
 import Delete from '@mui/icons-material/Delete';
 import { LoadingButton } from '@mui/lab';
 import {
-	Box,
-	Button,
-	Paper,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Typography,
+    Box,
+    Button, Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { Link } from 'react-router';
@@ -27,7 +26,7 @@ export function BasketPage() {
 	if (!basket) return <Typography variant="h3">Basket is empty</Typography>;
 	return (
 		<>
-			<TableContainer component={Paper}>
+            <TableContainer component={Paper}>
 				<Table sx={{ minWidth: 650 }} aria-label="simple table">
 					<TableHead>
 						<TableRow>
