@@ -1,11 +1,8 @@
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import Grid from '@mui/material/Grid';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import { Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+import AppCheckbox from './AppCheckbox.tsx';
 import AppTextInput from './AppTextInput.tsx';
 
 const FormGrid = styled(Grid)(() => ({
@@ -14,12 +11,8 @@ const FormGrid = styled(Grid)(() => ({
 }));
 
 export default function AddressForm() {
-	const {
-		control,
-		handleSubmit,
-		register,
-		formState: { errors },
-	} = useForm();
+	const { control } = useFormContext();
+
 	return (
 		<Grid container spacing={3}>
 			<FormGrid size={{ xs: 12, md: 12 }}>
@@ -93,9 +86,11 @@ export default function AddressForm() {
 				/>
 			</FormGrid>
 			<FormGrid size={{ xs: 12 }}>
-				<FormControlLabel
-					control={<Checkbox name="saveAddress" value="yes" />}
-					label="Use this address for payment details"
+				<AppCheckbox
+					size={'small'}
+					name={'saveAddress'}
+					label={'Use this address for payment details'}
+					control={control}
 				/>
 			</FormGrid>
 		</Grid>
