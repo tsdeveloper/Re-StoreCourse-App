@@ -39,14 +39,15 @@ function getStepContent(step: number) {
 }
 
 export default function CheckoutPage() {
+	const [activeStep, setActiveStep] = useState(0);
+	const currentValidationSchema = checkoutValidation[activeStep];
 	const methods = useForm({
 		mode: 'onTouched',
-		resolver: yupResolver(checkoutValidation),
+		resolver: yupResolver(currentValidationSchema),
 	});
 
-	const [activeStep, setActiveStep] = useState(0);
 	const handleNext = (data: FieldValues) => {
-		if (activeStep === 0) {
+		if (activeStep === 1) {
 			console.log(data);
 		}
 		setActiveStep(activeStep + 1);
