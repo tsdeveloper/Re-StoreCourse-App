@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { LoadingButton } from '@mui/lab';
 import {
 	Box,
 	Button,
@@ -15,6 +16,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
+import agent from '../../app/api/agent.ts';
 import AddressForm from '../../app/components/AddressForm.tsx';
 import { checkoutValidation } from '../../app/components/checkoutValidation.ts';
 import Info from '../../app/components/Info';
@@ -22,6 +24,8 @@ import InfoMobile from '../../app/components/InfoMobile';
 import PaymentForm from '../../app/components/PaymentForm.tsx';
 import Review from '../../app/components/Review.tsx';
 import SitemarkIcon from '../../app/components/SitemarkIcon';
+import { useAppDispatch } from '../../app/store/configureStore.ts';
+import { clearBasket } from '../basket/basketSlice.ts';
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
@@ -39,18 +43,37 @@ function getStepContent(step: number) {
 }
 
 export default function CheckoutPage() {
+	const [activeStep, setActiveStep] = useState(0);
+	const currentValidationSchema = checkoutValidation[activeStep];
 	const methods = useForm({
 		mode: 'onTouched',
-		resolver: yupResolver(checkoutValidation),
+		resolver: yupResolver(currentValidationSchema),
 	});
+	const [orderNumber, setOrderNumber] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const dispatch = useAppDispatch();
 
-	const [activeStep, setActiveStep] = useState(0);
-	const handleNext = (data: FieldValues) => {
-		if (activeStep === 0) {
-			console.log(data);
+	const handleNext = async (data: FieldValues) => {
+		const { nameOnCard, saveAddress, ...shippingAddress } = data;
+		if (activeStep === steps.length - 1) {
+			setLoading(true);
+			try {
+				const response = await agent.Orders.create({
+					saveAddress,
+					shippingAddress,
+				});
+				setOrderNumber(orderNumber + 1);
+				dispatch(clearBasket());
+				setLoading(false);
+			} catch (e) {
+				console.log(e);
+				setLoading(false);
+			}
+		} else {
+			setActiveStep(activeStep + 1);
 		}
-		setActiveStep(activeStep + 1);
 	};
+
 	const handleBack = () => {
 		setActiveStep(activeStep - 1);
 	};
@@ -93,7 +116,7 @@ export default function CheckoutPage() {
 							maxWidth: 500,
 						}}
 					>
-						<Info totalPrice={activeStep >= 2 ? '$144.97' : '$134.98'} />
+						<Info />
 					</Box>
 				</Grid>
 				<Grid
@@ -208,8 +231,9 @@ export default function CheckoutPage() {
 								<Typography variant="h5">Thank you for your order!</Typography>
 								<Typography variant="body1" sx={{ color: 'text.secondary' }}>
 									Your order number is
-									<strong>&nbsp;#140396</strong>. We have emailed your order
-									confirmation and will update you once its shipped.
+									<strong>&nbsp;#{orderNumber}</strong>. We have not emailed
+									your order confirmation and will not update you once its
+									shipped as this a fake store.
 								</Typography>
 								<Button
 									variant="contained"
@@ -250,7 +274,8 @@ export default function CheckoutPage() {
 											</Button>
 										)}
 										{activeStep !== 0 && (
-											<Button
+											<LoadingButton
+												loading={loading}
 												startIcon={<ChevronLeftRoundedIcon />}
 												onClick={handleBack}
 												variant="outlined"
@@ -258,7 +283,7 @@ export default function CheckoutPage() {
 												sx={{ display: { xs: 'flex', sm: 'none' } }}
 											>
 												Previous
-											</Button>
+											</LoadingButton>
 										)}
 										<Button
 											disabled={!methods.formState.isValid}
