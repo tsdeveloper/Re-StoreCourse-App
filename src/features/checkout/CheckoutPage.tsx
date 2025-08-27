@@ -14,7 +14,7 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
 import agent from '../../app/api/agent.ts';
 import AddressForm from '../../app/components/AddressForm.tsx';
@@ -53,6 +53,18 @@ export default function CheckoutPage() {
 	const [loading, setLoading] = useState(false);
 	const dispatch = useAppDispatch();
 
+	useEffect(() => {
+		agent.Account.fetchAddress().then((response) => {
+			if (response) {
+				methods.reset({
+					...methods.getValues(),
+					...response,
+					saveAddress: false,
+				});
+			}
+		});
+	}, [methods]);
+
 	const handleNext = async (data: FieldValues) => {
 		const { nameOnCard, saveAddress, ...shippingAddress } = data;
 		if (activeStep === steps.length - 1) {
@@ -62,7 +74,8 @@ export default function CheckoutPage() {
 					saveAddress,
 					shippingAddress,
 				});
-				setOrderNumber(orderNumber + 1);
+				setOrderNumber(response);
+				setActiveStep(activeStep + 1);
 				dispatch(clearBasket());
 				setLoading(false);
 			} catch (e) {

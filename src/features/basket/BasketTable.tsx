@@ -33,7 +33,7 @@ export default function BasketTable({ items, isBasket = true }: Props) {
 			<Table sx={{ minWidth: 650 }} aria-label="simple table">
 				<TableHead>
 					<TableRow>
-						<TableCell>Product</TableCell>
+						<TableCell sx={{ fontWeight: 'bold' }}>Product</TableCell>
 						<TableCell align="right">Price</TableCell>
 						<TableCell align="right">Quantity</TableCell>
 						<TableCell align="right">Subtotal</TableCell>

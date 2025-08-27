@@ -11,7 +11,7 @@ const FormGrid = styled(Grid)(() => ({
 }));
 
 export default function AddressForm() {
-	const { control } = useFormContext();
+	const { control, formState } = useFormContext();
 
 	return (
 		<Grid container spacing={3}>
@@ -87,6 +87,7 @@ export default function AddressForm() {
 			</FormGrid>
 			<FormGrid size={{ xs: 12 }}>
 				<AppCheckbox
+					disabled={!formState.isDirty}
 					size={'small'}
 					name={'saveAddress'}
 					label={'Use this address for payment details'}

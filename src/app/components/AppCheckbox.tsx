@@ -5,6 +5,7 @@ import { type UseControllerProps, useController } from 'react-hook-form';
 interface Props extends UseControllerProps {
 	label: string;
 	size: 'small';
+	disabled?: boolean;
 }
 
 export default function AppCheckbox(props: Props) {
@@ -18,6 +19,7 @@ export default function AppCheckbox(props: Props) {
 					size={size}
 					checked={field.value}
 					color="secondary"
+					disabled={props.disabled}
 				/>
 			}
 			label="Use this address for payment details"

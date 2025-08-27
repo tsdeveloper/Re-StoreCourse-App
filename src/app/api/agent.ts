@@ -26,31 +26,6 @@ const requests = {
 	delete: (url: string) => axios.delete(url).then(responseBody),
 };
 
-const Catalog = {
-	list: (params: URLSearchParams) => requests.get('product', params),
-	details: (id: number) => requests.get(`product/${id}`),
-	fetchFilters: () => requests.get(`product/filters`),
-};
-
-const Basket = {
-	get: () => requests.get('basket'),
-	addItem: (productId: number, quantity: number) =>
-		requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
-	details: (id: number) => requests.get(`basket/${id}`),
-	removeItem: (productId: number, quantity: number) =>
-		requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
-};
-
-const Account = {
-	login: (values: any) => requests.post('account/login', values),
-	register: (values: any) => requests.post('account/register', values),
-	currentUser: () => requests.get('account/currentUser'),
-};
-
-const Checkout = {
-	list: () => requests.get('checkout'),
-};
-
 axios.interceptors.response.use(
 	async (response) => {
 		await sleep();
@@ -102,6 +77,32 @@ const TestError = {
 	get404Error: () => requests.get('buggy/not-found'),
 	get500Error: () => requests.get('buggy/server-error'),
 	getValidationError: () => requests.get('buggy/validation-error'),
+};
+
+const Catalog = {
+	list: (params: URLSearchParams) => requests.get('product', params),
+	details: (id: number) => requests.get(`product/${id}`),
+	fetchFilters: () => requests.get(`product/filters`),
+};
+
+const Basket = {
+	get: () => requests.get('basket'),
+	addItem: (productId: number, quantity: number) =>
+		requests.post(`basket?productId=${productId}&quantity=${quantity}`, {}),
+	details: (id: number) => requests.get(`basket/${id}`),
+	removeItem: (productId: number, quantity: number) =>
+		requests.delete(`basket?productId=${productId}&quantity=${quantity}`),
+};
+
+const Account = {
+	login: (values: any) => requests.post('account/login', values),
+	register: (values: any) => requests.post('account/register', values),
+	currentUser: () => requests.get('account/currentUser'),
+	fetchAddress: () => requests.get('account/saveAddress'),
+};
+
+const Checkout = {
+	list: () => requests.get('checkout'),
 };
 
 const Orders = {
