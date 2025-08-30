@@ -169,10 +169,13 @@ export default function CheckoutPage() {
 								activeStep={activeStep}
 								sx={{ width: '100%', height: 40 }}
 							>
-								{steps.map((label) => (
+								{steps.map((label, index) => (
 									<Step
-										sx={{ ':first-child': { pl: 0 }, ':last-child': { pr: 0 } }}
-										key={label}
+										sx={{
+											':first-of-type': { pl: 0 },
+											':last-child': { pr: 0 },
+										}}
+										key={index}
 									>
 										<StepLabel>{label}</StepLabel>
 									</Step>
@@ -219,14 +222,14 @@ export default function CheckoutPage() {
 							alternativeLabel
 							sx={{ display: { sm: 'flex', md: 'none' } }}
 						>
-							{steps.map((label) => (
+							{steps.map((label, index) => (
 								<Step
 									sx={{
-										':first-child': { pl: 0 },
+										':first-of-type': { pl: 0 },
 										':last-child': { pr: 0 },
 										'& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
 									}}
-									key={label}
+									key={index}
 								>
 									<StepLabel
 										sx={{

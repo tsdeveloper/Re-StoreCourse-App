@@ -1,4 +1,3 @@
-import { an } from '@faker-js/faker/dist/airline-BUL6NtOJ';
 import { OutlinedInput, Typography } from '@mui/material';
 import FormLabel from '@mui/material/FormLabel';
 import type * as React from 'react';
@@ -9,16 +8,18 @@ interface Props extends UseControllerProps {
 	size: 'small';
 	required?: boolean;
 	placeholder: string;
-	value?: string;
+	inputComponent?: any;
+	onChange?: (event: any) => void;
 	format?: (event: any) => string;
 }
 
 export default function AppTextInput(props: Props) {
 	const { fieldState, field } = useController({ ...props, defaultValue: '' });
-	const { size, required, placeholder, format, value } = props;
+	const { size, required, placeholder, inputComponent, onChange, format } =
+		props;
 
 	const handleChange = (event: any) => {
-		const formattedValue = format ? format(event) : event.target.value;
+		const formattedValue = onChange ? onChange(event) : event.target.value;
 		field.onChange(formattedValue);
 	};
 
@@ -26,14 +27,14 @@ export default function AppTextInput(props: Props) {
 		<>
 			<FormLabel>
 				{props.label}
-				{props.required ? '*' : ''}
+				{required ? '*' : ''}
 			</FormLabel>
 			<OutlinedInput
 				{...field}
 				size={size}
 				error={!!fieldState.error}
-				required={required}
 				placeholder={placeholder}
+				inputComponent={inputComponent}
 				onChange={handleChange}
 			/>
 			{fieldState.error?.message && (

@@ -6,6 +6,7 @@ import {
 	Typography,
 } from '@mui/material';
 import * as React from 'react';
+import { Fragment } from 'react';
 import { useAppSelector } from '../store/configureStore.ts';
 import { currencyFormat } from '../util/util.ts';
 
@@ -32,20 +33,16 @@ export default function Info() {
 			<List disablePadding>
 				{basket &&
 					basket.basketItems.length > 0 &&
-					basket.basketItems.map((item) => (
-						<>
-							<ListItem key={item.productId} sx={{ py: 1, px: 0 }}>
-								<ListItemText
-									sx={{ mr: 2 }}
-									primary={item.name}
-									secondary={`${item.quantity} x quantity`}
-								/>
+					basket.basketItems.map((item, index) => (
+						<Fragment key={index}>
+							<ListItem sx={{ py: 1, px: 0 }}>
+								<ListItemText sx={{ mr: 2 }} primary={item.name} />
 								<Typography variant="body1" sx={{ fontWeight: 'medium' }}>
 									{currencyFormat(item.price * item.quantity)}
 								</Typography>
 							</ListItem>
-							<Divider component="li" />
-						</>
+							<Divider orientation="horizontal" flexItem />
+						</Fragment>
 					))}
 			</List>
 		</>
