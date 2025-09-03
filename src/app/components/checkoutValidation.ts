@@ -11,7 +11,10 @@ export const checkoutValidation = [
 		country: yup.string().required(),
 	}),
 	yup.object({
-		nameOnCard: yup.string().required('Number card is required'),
+		nameOnCard: yup.string().required('Name card is required'),
+		cardExpiry: yup.object().required('Card expire is required'),
+		cardCvv: yup.object().required('Card cvv is required'),
+		cardNumber: yup.object().required('Card number is required'),
 	}),
 	yup.object(),
 ];

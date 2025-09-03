@@ -3,7 +3,6 @@ import SimCardRoundedIcon from '@mui/icons-material/SimCardRounded';
 import { Box, Typography } from '@mui/material';
 import {
 	CardCvcElement,
-	CardElement,
 	CardExpiryElement,
 	CardNumberElement,
 } from '@stripe/react-stripe-js';
@@ -15,7 +14,7 @@ import FormGridStyle from './FromGridStyle.tsx';
 import PaymentContainer from './PaymentContainerStyle.tsx';
 
 export default function CreditCard() {
-	const { control } = useFormContext();
+	const { control, setValue } = useFormContext();
 	const [cardState, setCardState] = useState<{
 		elementError: { [key in StripeElementType]?: string };
 	}>({ elementError: {} });
