@@ -14,13 +14,13 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material';
-import { Elements } from '@stripe/react-stripe-js';
+import { Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
 import agent from '../../app/api/agent.ts';
 import AddressForm from '../../app/components/AddressForm.tsx';
-import { checkoutValidation } from '../../app/components/checkoutValidation.ts';
+import { checkoutSchema } from '../../app/components/checkoutSchema.ts';
 import Info from '../../app/components/Info';
 import InfoMobile from '../../app/components/InfoMobile';
 import PaymentForm from '../../app/components/PaymentForm.tsx';
@@ -50,14 +50,17 @@ function getStepContent(step: number) {
 
 export default function CheckoutPage() {
 	const [activeStep, setActiveStep] = useState(0);
-	const currentValidationSchema = checkoutValidation[activeStep];
+	const currentValidationSchema = checkoutSchema[activeStep];
 	const methods = useForm({
-		mode: 'onTouched',
+		mode: 'onChange',
 		resolver: yupResolver(currentValidationSchema),
 	});
 	const [orderNumber, setOrderNumber] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const dispatch = useAppDispatch();
+	const stripe = useStripe();
+	const elements = useElements();
+	const [stripeError, setStripeError] = useState<string | null>(null);
 
 	useEffect(() => {
 		agent.Account.fetchAddress().then((response) => {
@@ -314,7 +317,7 @@ export default function CheckoutPage() {
 												</LoadingButton>
 											)}
 											<Button
-												disabled={!methods.formState.isValid}
+												disabled={!methods.formState.isValid || !stripe}
 												variant="contained"
 												endIcon={<ChevronRightRoundedIcon />}
 												type="submit"
