@@ -3,7 +3,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Stack from '@mui/material/Stack';
 import * as React from 'react';
 import { type SetStateAction, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 import BankTransfer from './BankTransfer.tsx';
 import BankTransferRadio from './BankTransferRadio.tsx';
 import CreditCard from './CreditCard.tsx';

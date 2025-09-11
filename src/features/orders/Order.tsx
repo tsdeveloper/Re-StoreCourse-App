@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from 'react';
 import { set } from 'react-hook-form';
 import agent from '../../app/api/agent.ts';
+import getStatusChipProps from '../../app/components/ChipOrderStatusCustom.tsx';
 import LoadingComponent from '../../app/layout/LoadingComponent.tsx';
 import type { Order } from '../../app/models/order.ts';
 import { currencyFormat } from '../../app/util/util.ts';
@@ -50,44 +51,6 @@ export default function Order() {
 				/>
 			);
 	}
-
-	const getStatusChipProps = (status, theme) => {
-		switch (status) {
-			case 'PaymentReceived':
-				return {
-					label: status,
-					color: 'success',
-					component: 'a',
-					sx: {
-						backgroundColor: alpha(theme.palette.success.main, 0.1),
-						color: theme.palette.success.main,
-						fontWeight: 'bold',
-					},
-				};
-			case 'PaymentFailed':
-				return {
-					label: status,
-					color: 'success',
-					component: 'a',
-					sx: {
-						backgroundColor: alpha(theme.palette.error.main, 0.1),
-						color: theme.palette.error.main,
-						fontWeight: 'bold',
-					},
-				};
-			default:
-				return {
-					label: status,
-					color: 'success',
-					component: 'a',
-					sx: {
-						backgroundColor: alpha(theme.palette.warning.main, 0.1),
-						color: theme.palette.warning.main,
-						fontWeight: 'bold',
-					},
-				};
-		}
-	};
 
 	return (
 		<TableContainer component={Paper}>
@@ -135,9 +98,7 @@ export default function Order() {
 							</TableCell>
 							<TableCell align="right">{order.orderDate}</TableCell>
 							<TableCell align="right">
-								<Chip
-									{...getStatusChipProps(order.orderStatus.toString(), theme)}
-								/>
+								{getStatusChipProps(order.orderStatus.toString(), theme)}
 							</TableCell>
 							<TableCell align="right">
 								<Button onClick={() => setSelectedOrderNumber(order.id)}>
