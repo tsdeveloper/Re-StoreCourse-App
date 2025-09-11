@@ -14,7 +14,7 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material';
-import { Elements, useElements, useStripe } from '@stripe/react-stripe-js';
+import { Elements, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
@@ -35,32 +35,23 @@ const stripePromise = loadStripe(
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
-function getStepContent(step: number) {
-	switch (step) {
-		case 0:
-			return <AddressForm />;
-		case 1:
-			return <PaymentForm />;
-		case 2:
-			return <Review />;
-		default:
-			throw new Error('Unknown step');
-	}
-}
-
 export default function CheckoutPage() {
 	const [activeStep, setActiveStep] = useState(0);
-	const currentValidationSchema = checkoutSchema[activeStep];
 	const methods = useForm({
 		mode: 'onChange',
-		resolver: yupResolver(currentValidationSchema),
+		resolver: async (data, context, options) => {
+			const currentValidationSchema = checkoutSchema[activeStep];
+			return yupResolver(currentValidationSchema)(data, context, options);
+		},
 	});
 	const [orderNumber, setOrderNumber] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const dispatch = useAppDispatch();
 	const stripe = useStripe();
-	const elements = useElements();
-	const [stripeError, setStripeError] = useState<string | null>(null);
+
+	useEffect(() => {
+		methods.trigger();
+	}, [activeStep, methods]);
 
 	useEffect(() => {
 		agent.Account.fetchAddress().then((response) => {
@@ -75,7 +66,7 @@ export default function CheckoutPage() {
 	}, [methods]);
 
 	const handleNext = async (data: FieldValues) => {
-		const { nameOnCard, saveAddress, ...shippingAddress } = data;
+		const { saveAddress, ...shippingAddress } = data;
 		if (activeStep === steps.length - 1) {
 			setLoading(true);
 			try {
@@ -179,13 +170,13 @@ export default function CheckoutPage() {
 									activeStep={activeStep}
 									sx={{ width: '100%', height: 40 }}
 								>
-									{steps.map((label, index) => (
+									{steps.map((label) => (
 										<Step
 											sx={{
 												':first-of-type': { pl: 0 },
 												':last-child': { pr: 0 },
 											}}
-											key={index}
+											key={label}
 										>
 											<StepLabel>{label}</StepLabel>
 										</Step>
@@ -232,14 +223,14 @@ export default function CheckoutPage() {
 								alternativeLabel
 								sx={{ display: { sm: 'flex', md: 'none' } }}
 							>
-								{steps.map((label, index) => (
+								{steps.map((label) => (
 									<Step
 										sx={{
 											':first-of-type': { pl: 0 },
 											':last-child': { pr: 0 },
 											'& .MuiStepConnector-root': { top: { xs: 6, sm: 12 } },
 										}}
-										key={index}
+										key={label}
 									>
 										<StepLabel
 											sx={{
@@ -276,7 +267,17 @@ export default function CheckoutPage() {
 							) : (
 								<form onSubmit={methods.handleSubmit(handleNext)}>
 									<Grid>
-										{getStepContent(activeStep)}
+										<Box>
+											<div style={{ display: activeStep === 0 ? 'block' : 'none' }}>
+												<AddressForm />
+											</div>
+											<div style={{ display: activeStep === 1 ? 'block' : 'none' }}>
+												<PaymentForm />
+											</div>
+											<div style={{ display: activeStep === 2 ? 'block' : 'none' }}>
+												<Review />
+											</div>
+										</Box>
 										<Box
 											sx={[
 												{

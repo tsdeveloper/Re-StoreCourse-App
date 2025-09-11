@@ -1,6 +1,7 @@
 import FormControl from '@mui/material/FormControl';
 import RadioGroup from '@mui/material/RadioGroup';
 import Stack from '@mui/material/Stack';
+import type { StripeElementType } from '@stripe/stripe-js';
 import * as React from 'react';
 import { type SetStateAction, useState } from 'react';
 import BankTransfer from './BankTransfer.tsx';
@@ -16,6 +17,25 @@ export default function PaymentForm() {
 	}) => {
 		setPaymentType(event.target.value);
 	};
+
+	const [cardState, setCardState] = useState<{
+		elementError: { [key in StripeElementType]?: string } | null;
+	}>({ elementError: {} });
+	const [cardComplete, setCardComplete] = useState({
+		cardNumber: false,
+		cardExpiry: false,
+		cardCvc: false,
+	});
+
+	function onCardInputChange(event: any) {
+		setCardState({
+			...cardState,
+			elementError: {
+				[event.elementType]: event.error?.message,
+			},
+		});
+		setCardComplete({ ...cardComplete, [event.elementType]: event.complete });
+	}
 
 	return (
 		<Stack spacing={{ xs: 2, sm: 3 }} useFlexGap>

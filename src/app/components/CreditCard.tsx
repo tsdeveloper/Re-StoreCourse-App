@@ -32,7 +32,7 @@ export default function CreditCard() {
 					<FormGridStyle sx={{ flexGrow: 1 }}>
 						<StripeCardElement
 							control={control}
-							name={'card'}
+							name={'cardNumber'}
 							label={'Card number'}
 						/>
 					</FormGridStyle>

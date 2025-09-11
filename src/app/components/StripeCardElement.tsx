@@ -48,7 +48,7 @@ export function StripeCardElement<T extends FieldValues>({
 	useEffect(() => {
 		if (!stripe || !elements) return;
 
-		const cardElement = elements.getElement('card');
+		const cardElement = elements.getElement('cardNumber');
 		if (!cardElement) return;
 
 		cardElementRef.current = cardElement;

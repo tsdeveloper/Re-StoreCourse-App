@@ -12,7 +12,7 @@ export const checkoutSchema = [
 	}),
 	yup.object({
 		nameOnCard: yup.string().required('Name card is required'),
-		card: yup
+		cardNumber: yup
 			.object({
 				complete: yup.boolean().nullable(),
 				error: yup.object().nullable(),
