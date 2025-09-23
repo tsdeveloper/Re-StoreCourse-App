@@ -1,4 +1,3 @@
-import { el } from '@faker-js/faker';
 import { yupResolver } from '@hookform/resolvers/yup';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -22,7 +21,7 @@ import {
 	useStripe,
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
 import agent from '../../app/api/agent.ts';
 import AddressForm from '../../app/components/AddressForm.tsx';
@@ -54,6 +53,7 @@ export default function CheckoutPage() {
 	const [paymentMessage, setPaymentMessage] = useState('');
 	const [paymentSucceded, setPaymentSucceded] = useState(false);
 	const { basket } = useAppSelector((state) => state.basket);
+	const creditCardRef = useRef(null);
 
 	const methods = useForm({
 		mode: 'onChange',
@@ -82,12 +82,17 @@ export default function CheckoutPage() {
 	async function submitOrder(data: FieldValues) {
 		setLoading(true);
 		const { nameOnCard, saveAddress, ...shippingAddress } = data;
-		if (!stripe || !elements) return;
 
-		const card = elements.getElement(CardElement);
-		console.log(card);
+		if (!stripe || !creditCardRef.current) {
+			setLoading(false);
+			return;
+		}
 
 		try {
+			const cardElement: typeof CardElement =
+				creditCardRef.current.getCardElement(CardElement);
+			console.log(cardElement);
+
 			const paymentResult = await agent.Payments.confirmPaymentIntent(basket);
 			console.log(paymentResult);
 
@@ -124,6 +129,7 @@ export default function CheckoutPage() {
 	const handleBack = () => {
 		setActiveStep(activeStep - 1);
 	};
+
 	return (
 		<Elements stripe={stripePromise}>
 			<FormProvider {...methods}>
@@ -279,23 +285,15 @@ export default function CheckoutPage() {
 							{activeStep === steps.length ? (
 								<Stack spacing={2} useFlexGap>
 									<Typography variant="h1">📦</Typography>
-									<Typography variant="h5">{paymentMessage}</Typography>
-									{paymentSucceded ? (
-										<Typography
-											variant="body1"
-											sx={{ color: 'text.secondary' }}
-										>
-											Your order number is
-											<strong>&nbsp;#{orderNumber}</strong>. We have not emailed
-											your order confirmation and will not update you once its
-											shipped as this a fake store.
-										</Typography>
-									) : (
-										<Button variant="contained" onClick={handleBack}>
-											Go back and try again
-										</Button>
-									)}
-
+									<Typography variant="h5">
+										Thank you for your order!
+									</Typography>
+									<Typography variant="body1" sx={{ color: 'text.secondary' }}>
+										Your order number is
+										<strong>&nbsp;#{orderNumber}</strong>. We have not emailed
+										your order confirmation and will not update you once its
+										shipped as this a fake store.
+									</Typography>
 									<Button
 										variant="contained"
 										sx={{
@@ -318,7 +316,7 @@ export default function CheckoutPage() {
 											<div
 												style={{ display: activeStep === 1 ? 'block' : 'none' }}
 											>
-												<PaymentForm />
+												<PaymentForm ref={creditCardRef} />
 											</div>
 											<div
 												style={{ display: activeStep === 2 ? 'block' : 'none' }}

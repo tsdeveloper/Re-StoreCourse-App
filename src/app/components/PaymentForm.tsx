@@ -3,13 +3,13 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Stack from '@mui/material/Stack';
 import type { StripeElementType } from '@stripe/stripe-js';
 import * as React from 'react';
-import { type SetStateAction, useState } from 'react';
+import { forwardRef, type SetStateAction, useState } from 'react';
 import BankTransfer from './BankTransfer.tsx';
 import BankTransferRadio from './BankTransferRadio.tsx';
 import CreditCard from './CreditCard.tsx';
 import CreditCardRadio from './CreditCardRadio.tsx';
 
-export default function PaymentForm() {
+const PaymentForm = forwardRef(function PaymentForm(props, ref) {
 	const [paymentType, setPaymentType] = useState('creditCard');
 
 	const handlePaymentTypeChange = (event: {
@@ -62,8 +62,10 @@ export default function PaymentForm() {
 					/>
 				</RadioGroup>
 			</FormControl>
-			{paymentType === 'creditCard' && <CreditCard />}
+			{paymentType === 'creditCard' && <CreditCard ref={ref} />}
 			{paymentType === 'bankTransfer' && <BankTransfer />}
 		</Stack>
 	);
-}
+});
+
+export default PaymentForm;

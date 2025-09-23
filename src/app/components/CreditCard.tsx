@@ -1,14 +1,25 @@
 import CreditCardRoundedIcon from '@mui/icons-material/CreditCardRounded';
 import SimCardRoundedIcon from '@mui/icons-material/SimCardRounded';
 import { Box, Typography } from '@mui/material';
+import { CardElement, useElements } from '@stripe/react-stripe-js';
+import { forwardRef, useImperativeHandle } from 'react';
 import { useFormContext } from 'react-hook-form';
 import AppTextInput from './AppTextInput.tsx';
 import FormGridStyle from './FromGridStyle.tsx';
 import PaymentContainer from './PaymentContainerStyle.tsx';
 import { StripeCardElement } from './StripeCardElement.tsx';
 
-export default function CreditCard() {
+const CreditCard = forwardRef(function CreditCard(props, ref) {
 	const { control } = useFormContext();
+	const elements = useElements();
+
+	useImperativeHandle(ref, () => ({
+		getCardElement: () => {
+			if (!elements) return null;
+			return elements.getElement(CardElement);
+		},
+	}));
+
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
 			<PaymentContainer>
@@ -52,4 +63,6 @@ export default function CreditCard() {
 			</PaymentContainer>
 		</Box>
 	);
-}
+});
+
+export default CreditCard;
