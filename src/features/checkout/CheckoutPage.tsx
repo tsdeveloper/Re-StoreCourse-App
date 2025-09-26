@@ -14,12 +14,7 @@ import {
 	Stepper,
 	Typography,
 } from '@mui/material';
-import {
-	CardElement,
-	Elements,
-	useElements,
-	useStripe,
-} from '@stripe/react-stripe-js';
+import { Elements, useStripe } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useRef, useState } from 'react';
 import { type FieldValues, FormProvider, useForm } from 'react-hook-form';
@@ -31,28 +26,17 @@ import InfoMobile from '../../app/components/InfoMobile';
 import PaymentForm from '../../app/components/PaymentForm.tsx';
 import Review from '../../app/components/Review.tsx';
 import SitemarkIcon from '../../app/components/SitemarkIcon';
-import {
-	useAppDispatch,
-	useAppSelector,
-} from '../../app/store/configureStore.ts';
+import { useAppDispatch } from '../../app/store/configureStore.ts';
 import { clearBasket } from '../basket/basketSlice.ts';
 
-const stripePromise = loadStripe(
-	'pk_test_51S0splPkMfhkscsAPa6qMplyc0QM1JebVoymdgud5hvRFoUsklBaBrEyupGUGoBojW2D5Zr0H3zXIHmLx6ug3CB100hz8LdQWM',
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 
 export default function CheckoutPage() {
 	const [activeStep, setActiveStep] = useState(0);
-	const [orderNumber, setOrderNumber] = useState(0);
-	const [loading, setLoading] = useState(false);
-	const dispatch = useAppDispatch();
-	const stripe = useStripe();
-	const elements = useElements();
-	const [paymentMessage, setPaymentMessage] = useState('');
 	const [paymentSucceded, setPaymentSucceded] = useState(false);
-	const { basket } = useAppSelector((state) => state.basket);
+	const [paymentMessage, setPaymentMessage] = useState('');
 	const creditCardRef = useRef(null);
 
 	const methods = useForm({
@@ -62,6 +46,10 @@ export default function CheckoutPage() {
 			return yupResolver(currentValidationSchema)(data, context, options);
 		},
 	});
+	const [orderNumber, setOrderNumber] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const dispatch = useAppDispatch();
+	const stripe = useStripe();
 
 	useEffect(() => {
 		methods.trigger();
@@ -89,31 +77,37 @@ export default function CheckoutPage() {
 		}
 
 		try {
-			const cardElement: typeof CardElement =
-				creditCardRef.current.getCardElement(CardElement);
-			console.log(cardElement);
+			const cardElement = creditCardRef.current.getCardElement();
+			const paymentResult = await stripe.createPaymentMethod({
+				type: 'card',
+				card: cardElement,
+				billing_details: {
+					name: nameOnCard,
+				},
+			});
 
-			const paymentResult = await agent.Payments.confirmPaymentIntent(basket);
-			console.log(paymentResult);
-
-			if (paymentResult.isSuccess) {
+			if (paymentResult.paymentMethod) {
+				const cardBrand = paymentResult.paymentMethod.card?.brand;
+				console.log('Payment Method Created:', paymentResult.paymentMethod);
+				console.log('Card Brand:', cardBrand);
 				const response = await agent.Orders.create({
 					saveAddress,
 					shippingAddress,
 				});
 				setOrderNumber(response);
-				setPaymentSucceded(true);
+				setPaymentSucceded(false);
 				setPaymentMessage('Thank you - we have received your payment');
 				setActiveStep(activeStep + 1);
 				dispatch(clearBasket());
-			} else {
-				setPaymentMessage(paymentResult.errorMessage);
-				setPaymentSucceded(false);
-				setActiveStep(activeStep + 1);
+				setLoading(false);
+			} else if (paymentResult.error) {
+				console.error('Payment Error:', paymentResult.error.message);
+				setLoading(false);
+				return;
 			}
-			setLoading(false);
-		} catch (e) {
-			console.log(e);
+		} catch (error) {
+			console.error(error);
+		} finally {
 			setLoading(false);
 		}
 	}
@@ -285,15 +279,23 @@ export default function CheckoutPage() {
 							{activeStep === steps.length ? (
 								<Stack spacing={2} useFlexGap>
 									<Typography variant="h1">📦</Typography>
-									<Typography variant="h5">
-										Thank you for your order!
-									</Typography>
-									<Typography variant="body1" sx={{ color: 'text.secondary' }}>
-										Your order number is
-										<strong>&nbsp;#{orderNumber}</strong>. We have not emailed
-										your order confirmation and will not update you once its
-										shipped as this a fake store.
-									</Typography>
+									<Typography variant="h5">{paymentMessage}</Typography>
+									{paymentSucceded ? (
+										<Typography
+											variant="body1"
+											sx={{ color: 'text.secondary' }}
+										>
+											Your order number is
+											<strong>&nbsp;#{orderNumber}</strong>. We have not emailed
+											your order confirmation and will not update you once its
+											shipped as this a fake store.
+										</Typography>
+									) : (
+										<Button variant="contained" onClick={handleBack}>
+											Go back and try again
+										</Button>
+									)}
+
 									<Button
 										variant="contained"
 										sx={{
