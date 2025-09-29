@@ -113,6 +113,8 @@ const Orders = {
 
 const Payments = {
 	createPaymentIntent: () => requests.post('payments', {}),
+	confirmPaymentIntent: (values: any) =>
+		requests.post(`payments/confirm`, values),
 };
 
 const agent = {
