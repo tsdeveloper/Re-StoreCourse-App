@@ -4,28 +4,30 @@ import {
 	createTheme,
 	ThemeProvider,
 } from '@mui/material';
-import {useCallback, useEffect, useState} from 'react';
-import { Outlet } from 'react-router';
+import { useCallback, useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router';
 import { ToastContainer } from 'react-toastify';
-import {fetchBasketAsync} from '../../features/basket/basketSlice';
+import { fetchCurrentUser } from '../../features/account/accountSlice.ts';
+import { fetchBasketAsync } from '../../features/basket/basketSlice';
+import HomePage from '../../features/home/HomePage.tsx';
 import { useAppDispatch } from '../store/configureStore';
 import Header from './Header';
 import LoadingComponent from './LoadingComponent';
-import {fetchCurrentUser} from "../../features/account/accountSlice.ts";
 
 function App() {
+	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const [darkMode, setDarkMode] = useState(false);
 	const [loading, setLoading] = useState(true);
 
-    const initApp = useCallback(async () => {
-        try {
-            await dispatch(fetchCurrentUser());
-            await dispatch(fetchBasketAsync());
-        }catch (error) {
-            console.log(error);
-        }
-    }, [dispatch]);
+	const initApp = useCallback(async () => {
+		try {
+			await dispatch(fetchCurrentUser());
+			await dispatch(fetchBasketAsync());
+		} catch (error) {
+			console.log(error);
+		}
+	}, [dispatch]);
 
 	useEffect(() => {
 		initApp().then(() => setLoading(false));
@@ -57,9 +59,15 @@ function App() {
 			/>
 			<CssBaseline />
 			<Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-			<Container>
-				<Outlet />
-			</Container>
+			{loading ? (
+				<LoadingComponent message="Initialising app..." />
+			) : location.pathname === '/' ? (
+				<HomePage />
+			) : (
+				<Container sx={{ mt: 4 }}>
+					<Outlet />
+				</Container>
+			)}
 		</ThemeProvider>
 	);
 }
